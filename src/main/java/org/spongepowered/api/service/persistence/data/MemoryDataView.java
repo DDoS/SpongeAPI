@@ -197,6 +197,7 @@ public class MemoryDataView implements DataView {
             DataView subView = (DataView) this.map.get(queryParts.get(0).asString('.'));
             if (subView == null) {
                 subView = new MemoryDataView(this.parent, queryParts.get(0));
+                this.map.put(queryParts.get(0).asString('.'), subView);
             }
             return subView.createView(subQuery);
         }
