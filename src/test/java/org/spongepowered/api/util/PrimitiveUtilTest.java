@@ -24,11 +24,12 @@
  */
 package org.spongepowered.api.util;
 
-import static org.junit.Assert.*;
 
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Optional;
+import org.junit.Test;
+
 
 public class PrimitiveUtilTest {
 
@@ -63,7 +64,7 @@ public class PrimitiveUtilTest {
         Optional<Boolean> nullBoolean = PrimitiveUtil.asBoolean(null);
         assertTrue(!nullBoolean.isPresent());
 
-        Optional<Boolean> invalidBoolean = PrimitiveUtil.asBoolean("Mybool");
+        Optional<Boolean> invalidBoolean = PrimitiveUtil.asBoolean("foo");
         assertTrue(!nullBoolean.isPresent());
     }
 
@@ -79,7 +80,7 @@ public class PrimitiveUtilTest {
         assertTrue(optional1.isPresent());
         assertTrue(optional1.get() == 1);
 
-        String invalidString = "mwahahahah";
+        String invalidString = "foo";
         Optional<Byte> invalidOptional = PrimitiveUtil.asByte(invalidString);
         assertTrue(!invalidOptional.isPresent());
 
@@ -106,7 +107,7 @@ public class PrimitiveUtilTest {
         assertTrue(optional1.isPresent());
         assertTrue(optional1.get() == 1);
 
-        String invalidString = "mwahahahah";
+        String invalidString = "foo";
         Optional<Short> invalidOptional = PrimitiveUtil.asShort(invalidString);
         assertTrue(!invalidOptional.isPresent());
 
@@ -133,7 +134,7 @@ public class PrimitiveUtilTest {
         assertTrue(optional1.isPresent());
         assertTrue(optional1.get() == 1);
 
-        String invalidString = "mwahahahah";
+        String invalidString = "foo";
         Optional<Long> invalidOptional = PrimitiveUtil.asLong(invalidString);
         assertTrue(!invalidOptional.isPresent());
 
@@ -160,7 +161,7 @@ public class PrimitiveUtilTest {
         assertTrue(optional1.isPresent());
         assertTrue(optional1.get() == 1);
 
-        String invalidString = "mwahahahah";
+        String invalidString = "foo";
         Optional<Float> invalidOptional = PrimitiveUtil.asFloat(invalidString);
         assertTrue(!invalidOptional.isPresent());
 
@@ -187,7 +188,7 @@ public class PrimitiveUtilTest {
         assertTrue(optional1.isPresent());
         assertTrue(optional1.get() == 1);
 
-        String invalidString = "mwahahahah";
+        String invalidString = "foo";
         Optional<Double> invalidOptional = PrimitiveUtil.asDouble(invalidString);
         assertTrue(!invalidOptional.isPresent());
 
@@ -214,7 +215,7 @@ public class PrimitiveUtilTest {
         assertTrue(optional1.isPresent());
         assertTrue(optional1.get() == 1);
 
-        String invalidString = "mwahahahah";
+        String invalidString = "foo";
         Optional<Integer> invalidOptional = PrimitiveUtil.asInteger(invalidString);
         assertTrue(!invalidOptional.isPresent());
 
@@ -241,10 +242,10 @@ public class PrimitiveUtilTest {
         assertTrue(optional1.isPresent());
         assertTrue(optional1.get().equals("1"));
 
-        String invalidString = "mwahahahah";
+        String invalidString = "foo";
         Optional<String> message = PrimitiveUtil.asString(invalidString);
         assertTrue(message.isPresent());
-        assertTrue(message.get().equals("mwahahahah"));
+        assertTrue(message.get().equals("foo"));
 
         int myInt = 1;
         Optional<String> optional2 = PrimitiveUtil.asString(myInt);

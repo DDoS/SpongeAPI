@@ -25,9 +25,13 @@
 package org.spongepowered.api.service.persistence.data;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -58,7 +62,6 @@ public class MemoryDataView implements DataView {
     protected MemoryDataView(DataView parent, DataQuery path) {
         checkArgument(path.getParts().size() >= 1,
                       "Path must have at least one part");
-
         this.parent = parent;
         this.container = parent.getContainer();
         this.path = parent.getCurrentPath().then(path);
@@ -66,7 +69,7 @@ public class MemoryDataView implements DataView {
 
     @Override
     public void remove(DataQuery path) {
-        // TODO implement
+        checkNotNull(path);
     }
 
     @Override
@@ -97,16 +100,20 @@ public class MemoryDataView implements DataView {
 
     @Override
     public Map<DataQuery, Object> getValues(boolean deep) {
+        ImmutableMap.Builder<DataQuery, Object> builder = ImmutableMap.builder();
+
         return Maps.newHashMap(); // TODO implement
     }
 
     @Override
     public boolean contains(DataQuery path) {
+        checkNotNull(path);
         return false; // TODO implement
     }
 
     @Override
     public Optional<Object> get(DataQuery path) {
+        checkNotNull(path);
         List<DataQuery> queryParts = path.getQueryParts();
 
         int sz = queryParts.size();
@@ -117,62 +124,87 @@ public class MemoryDataView implements DataView {
 
         if (sz == 1) {
             String key = queryParts.get(0).getParts().get(0);
-            if (map.containsKey(key)) {
-                return Optional.<Object>of(key);
+            if (this.map.containsKey(key)) {
+                return Optional.of(this.map.get(key));
             } else {
                 return Optional.absent();
             }
         }
-
-        DataView view = this;
-        for (int i = 1; i < sz; i++) {
-            DataQuery part = queryParts.get(0);
-            Optional<DataView> nested = view.getView(part);
-            if (nested.isPresent()) {
-                view = nested.get();
-            } else {
-                return Optional.absent();
-            }
+        DataQuery subQuery = queryParts.get(0);
+        Optional<DataView> subViewOptional = this.getView(subQuery);
+        DataView subView;
+        if (!subViewOptional.isPresent()) {
+            return Optional.absent();
+        } else {
+            subView = subViewOptional.get();
         }
+        List<String> subParts = Lists.newArrayListWithCapacity(queryParts.size() - 1);
+        for (int i = 1; i < queryParts.size(); i++) {
+            subParts.add(queryParts.get(i).asString("."));
+        }
+        return subView.get(new DataQuery(subParts));
 
-        DataQuery lastQueryPart = queryParts.get(sz - 1);
-        return view.get(lastQueryPart);
     }
 
     @Override
     public void set(DataQuery path, Object value) {
-        // TODO implement
+        checkNotNull(path);
+        checkNotNull(value);
+        checkState(this.container != null);
+
+        List<String> parts = path.getParts();
+        if (parts.size() > 1) {
+            String subKey = parts.get(0);
+            DataQuery subQuery = new DataQuery(subKey);
+            Optional<DataView> subViewOptional = this.getView(subQuery);
+            DataView subView;
+            if (!subViewOptional.isPresent()) {
+                this.createView(subQuery);
+                subView = (DataView) this.map.get(subKey);
+            } else {
+                subView = subViewOptional.get();
+            }
+            List<String> subParts = Lists.newArrayListWithCapacity(parts.size() - 1);
+            for (int i = 1; i < parts.size(); i++) {
+                subParts.add(parts.get(i));
+            }
+            subView.set(new DataQuery(subParts), value);
+        } else {
+            this.map.put(parts.get(0), value);
+        }
     }
 
     @Override
     public DataView createView(DataQuery path) {
+        checkNotNull(path);
         List<DataQuery> queryParts = path.getQueryParts();
 
         int sz = queryParts.size();
 
-        checkArgument(sz == 0, "The size of the query must be at least 1");
+        checkArgument(sz != 0, "The size of the query must be at least 1");
 
         if (sz == 1) {
             DataQuery key = queryParts.get(0);
             DataView result = new MemoryDataView(this, key);
-            map.put(key.getParts().get(0), result);
+            this.map.put(key.getParts().get(0), result);
             return result;
+        } else {
+            List<String> subParts = Lists.newArrayListWithCapacity(queryParts.size() - 1);
+            for (int i = 1; i < sz; i++) {
+                subParts.add(queryParts.get(i).asString('.'));
+            }
+            DataQuery subQuery = new DataQuery(subParts);
+            DataView subView = (DataView) this.map.get(queryParts.get(0).asString('.'));
+            if (subView == null) {
+                subView = new MemoryDataView(this.parent, queryParts.get(0));
+            }
+            return subView.createView(subQuery);
         }
-
-        DataView view = this;
-
-        for (int i = 1; i < sz; i++) {
-            DataQuery part = queryParts.get(0);
-            Optional<DataView> nested = view.getView(part);
-            view = nested.get();
-        }
-
-        DataQuery lastQueryPart = queryParts.get(sz - 1);
-        return view.createView(lastQueryPart);
     }
 
     @Override
     public DataView createView(DataQuery path, Map<?, ?> map) {
+        checkNotNull(path);
         DataView section = createView(path);
 
         for (Map.Entry<?, ?> entry : map.entrySet()) {
@@ -182,7 +214,6 @@ public class MemoryDataView implements DataView {
                 section.set(new DataQuery('.', entry.getKey().toString()), entry.getValue());
             }
         }
-
         return section;
     }
 
