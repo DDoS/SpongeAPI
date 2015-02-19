@@ -82,6 +82,26 @@ public class MemoryDataTest {
     }
 
     @Test
+    public void testBoolean() {
+        DataContainer container = new MemoryDataContainer();
+        DataQuery testQuery = new DataQuery("foo", "bar");
+        container.set(testQuery, false);
+        Optional<Boolean> booleanOptional = container.getBoolean(testQuery);
+        assertTrue(booleanOptional.isPresent());
+        assertTrue(!booleanOptional.get());
+    }
+
+    @Test
+    public void testString() {
+        DataContainer container = new MemoryDataContainer();
+        DataQuery testQuery = new DataQuery("foo", "bar");
+        container.set(testQuery, "foo");
+        Optional<String> stringOptional = container.getString(testQuery);
+        assertTrue(stringOptional.isPresent());
+        assertTrue(stringOptional.get().equals("foo"));
+    }
+
+    @Test
     public void testAbsents() {
         DataContainer container = new MemoryDataContainer();
         DataQuery testQuery = new DataQuery("foo", "bar", "baz");
@@ -130,5 +150,34 @@ public class MemoryDataTest {
         assertTrue(container.getByteList(testQuery).get().equals(byteList));
 
     }
+
+    @Test
+    public void testEmptyQuery() {
+        DataContainer container = new MemoryDataContainer();
+        DataQuery query = new DataQuery("");
+        container.set(query, "foo");
+        assertTrue(container.get(query).isPresent());
+        assertTrue(container.get(query).get().equals("foo"));
+    }
+
+    @Test
+    public void testContainsEmpty() {
+        DataContainer container = new MemoryDataContainer();
+        DataQuery query = new DataQuery("");
+        assertTrue(!container.contains(query));
+        container.set(query, "foo");
+        assertTrue(container.contains(query));
+        query = new DataQuery('.', "foo.bar");
+        assertTrue(!container.contains(query));
+        container.set(query, "baz");
+        assertTrue(container.contains(query));
+    }
+
+    @Test
+    public void testGetName() {
+        DataContainer container = new MemoryDataContainer();
+        assertTrue(container.getName() !=  null);
+    }
+
 
 }

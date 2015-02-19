@@ -85,7 +85,7 @@ public class MemoryDataView implements DataView {
     @Override
     public String getName() {
         List<String> parts = path.getParts();
-        return parts.get(parts.size() - 1);
+        return parts.isEmpty() ? "" : parts.get(parts.size() - 1);
     }
 
     @Override
@@ -94,21 +94,37 @@ public class MemoryDataView implements DataView {
     }
 
     @Override
-    public Set<DataQuery> getKeys(boolean deep) {
-        return Sets.newHashSet(); // TODO implement
+    public Collection<DataQuery> getKeys(boolean deep) {
+        return ImmutableList.of(); // TODO implement
     }
 
     @Override
     public Map<DataQuery, Object> getValues(boolean deep) {
         ImmutableMap.Builder<DataQuery, Object> builder = ImmutableMap.builder();
 
-        return Maps.newHashMap(); // TODO implement
+        return builder.build();
     }
 
     @Override
     public boolean contains(DataQuery path) {
         checkNotNull(path);
-        return false; // TODO implement
+        List<DataQuery> queryParts = path.getQueryParts();
+
+        if (queryParts.size() == 1) {
+            String key = queryParts.get(0).getParts().get(0);
+            return this.map.containsKey(key);
+        } else {
+            DataQuery subQuery = queryParts.get(0);
+            Optional<DataView> subViewOptional = this.getView(subQuery);
+            if (!subViewOptional.isPresent()) {
+                return false;
+            }
+            List<String> subParts = Lists.newArrayListWithCapacity(queryParts.size() - 1);
+            for (int i = 1; i < queryParts.size(); i++) {
+                subParts.add(queryParts.get(i).asString("."));
+            }
+            return subViewOptional.get().contains(new DataQuery(subParts));
+        }
     }
 
     @Override
