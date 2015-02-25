@@ -22,25 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.entity;
+package org.spongepowered.api.event.entity;
+
+import org.spongepowered.api.event.block.BulkBlockEvent;
+import org.spongepowered.api.world.Location;
 
 /**
- * Represents an experience orb.
+ * Represents an event when an explosion already has taken place and blocks
+ * are about to be broken/affected.
  */
-public interface ExperienceOrb extends Entity {
+public interface EntityExplosionEvent extends EntityEvent, BulkBlockEvent {
 
     /**
-     * Gets how much experience will be added to the player on pickup.
+     * Gets the location of the explosion. This is separate from the
+     * entity as the entity already blew up.
      *
-     * @return Amount of experience
+     * @return The location of detonation
      */
-    int getExperience();
+    Location getExplosionLocation();
 
     /**
-     * Sets how much experience will be added to the player on pickup.
+     * Gets the damaging yield of the explosion to affect blocks.
      *
-     * @param experience The new amount of experience
+     * <p>The higher the yield, the more blocks are broken. The yield
+     * is between 0 and 100.</p>
+     *
+     * @return The damaging yield of the explosion
      */
-    void setExperience(int experience);
+    double getYield();
+
+    /**
+     * Sets the damaging yield of the explosion to affect blocks.
+     *
+     * <p>The higher the yield, the more blocks are broken. The yield
+     * is between 0 and 100.</p>
+     *
+     * @param yield The damaging yield of the explosion
+     */
+    void setYield(double yield);
 
 }

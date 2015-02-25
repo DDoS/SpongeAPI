@@ -22,25 +22,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.entity;
+package org.spongepowered.api.event.entity;
+
+import org.spongepowered.api.entity.explosive.Explosive;
+import org.spongepowered.api.util.event.Cancellable;
 
 /**
- * Represents an experience orb.
+ * Represents an event when an {@link Explosive} is about to explode.
+ *
+ * <p>Explosions usually affect a radius and ignite, depending on the explosion.</p>
  */
-public interface ExperienceOrb extends Entity {
+public interface ExplosionPrimeEvent extends EntityEvent, Cancellable {
 
     /**
-     * Gets how much experience will be added to the player on pickup.
+     * Gets the explosive radius that the {@link Explosive} will affect.
      *
-     * @return Amount of experience
+     * @return The radius of effect
      */
-    int getExperience();
+    double getRadius();
 
     /**
-     * Sets how much experience will be added to the player on pickup.
+     * Sets the explosion radius.
      *
-     * @param experience The new amount of experience
+     * @param radius The explosion radius
      */
-    void setExperience(int experience);
+    void setRadius(double radius);
+
+    /**
+     * Gets whether the explosion will ignite ignitable blocks.
+     *
+     * <p>Blocks that may be ignited include logs, leaves, wool, etc.</p>
+     *
+     * @return Whether this explosion is flamable
+     */
+    boolean isFlamable();
+
+    /**
+     * Sets whether this explosion will be flamable or not.
+     *
+     * <p>Blocks that may be ignited include logs, leaves, wool, etc.</p>
+     *
+     * @param flamable Whether this explosion is flamable
+     */
+    void setFlamable(boolean flamable);
 
 }

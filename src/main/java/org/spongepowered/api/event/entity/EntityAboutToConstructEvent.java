@@ -22,25 +22,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.entity;
+package org.spongepowered.api.event.entity;
+
+import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.event.GameEvent;
+import org.spongepowered.api.event.cause.CauseTracked;
+import org.spongepowered.api.util.event.Cancellable;
+import org.spongepowered.api.world.Location;
 
 /**
- * Represents an experience orb.
+ * Represents an event where an entity is about to be constructed and
+ * may be spawned in a world.
+ *
+ * <p>This event allows plugins to cancel the creation of entities
+ * purely based on the {@link EntityType} and {@link Location}. This
+ * aids in massive object churning that would otherwise occur in
+ * massive cancellation of {@link EntitySpawnEvent}s due to the
+ * instantiation of entities and subsequently killing said entities.</p>
  */
-public interface ExperienceOrb extends Entity {
+public interface EntityAboutToConstructEvent extends GameEvent, CauseTracked, Cancellable {
 
     /**
-     * Gets how much experience will be added to the player on pickup.
+     * Gets the {@link EntityType} that is going to be constructed.
      *
-     * @return Amount of experience
+     * @return The entity type
      */
-    int getExperience();
+    EntityType getEntityType();
 
     /**
-     * Sets how much experience will be added to the player on pickup.
+     * Gets the {@link Location} of the entity that is going to be constructed.
      *
-     * @param experience The new amount of experience
+     * @return The location that the entity would spawn at
      */
-    void setExperience(int experience);
+    Location getLocation();
 
 }
