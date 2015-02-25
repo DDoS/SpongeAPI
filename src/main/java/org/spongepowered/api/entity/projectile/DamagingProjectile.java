@@ -25,6 +25,9 @@
 
 package org.spongepowered.api.entity.projectile;
 
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.EntityType;
+
 /**
  * Represents entities that act as projectiles and can fly in the air.
  * For example, Arrows.
@@ -35,15 +38,57 @@ public interface DamagingProjectile extends Projectile {
      * Gets the damage this projectile will deal to a {@link org.spongepowered.api.entity.living.Living}
      * if hit.
      *
-     * @return The damage of this arrow
+     * @return The damage to deal
      */
     double getDamage();
 
     /**
      * Sets the damage this projectile will deal to a LivingEntity if hit.
      *
-     * @param damage The damage
+     * @param damage The damage to deal
      */
     void setDamage(double damage);
+
+    /**
+     * Gets the damage this projectile will deal to the specified {@link EntityType}
+     * if hit.
+     *
+     * @param entityType The {@link EntityType} to set the damage amount for
+     * @return The damage to deal to the specified {@link EntityType}
+     */
+    double getDamageForEntityType(EntityType entityType);
+
+    /**
+     * Sets the damage this projectile will deal to the specified {@link EntityType}
+     * if hit.
+     *
+     * @param entityType The {@link EntityType} to set the damage amount for
+     * @param damage The damage to deal to the specified {@link EntityType}
+     */
+    void setDamageForEntityType(EntityType entityType, double damage);
+
+    /**
+     * Gets the damage this projectile will deal to the specified {@link EntityType}
+     * if hit.
+     *
+     * <p>The returned value takes precedence over
+     * {@link #getDamageForEntityType(EntityType)}.</p>
+     *
+     * @param entity The {@link Entity} to set the damage amount for
+     * @return The damage to deal to the specified {@link Entity}
+     */
+    double getDamageForEntity(Entity entity);
+
+    /**
+     * Gets the damage this projectile will deal to the specified {@link EntityType}
+     * if hit.
+     *
+     * <p>The specified damage value takes precedence over
+     * {@link #setDamageForEntityType(EntityType, double)}.</p>
+     *
+     * @param entity The {@link Entity} to set the damage amount for
+     * @param damage The damage to deal to the specified {@link Entity}
+     */
+    void setDamageForEntity(Entity entity, double damage);
 
 }
