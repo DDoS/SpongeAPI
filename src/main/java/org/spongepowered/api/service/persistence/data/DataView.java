@@ -25,6 +25,8 @@
 package org.spongepowered.api.service.persistence.data;
 
 import com.google.common.base.Optional;
+
+import org.spongepowered.api.Game;
 import org.spongepowered.api.service.persistence.DataSerializable;
 
 import java.util.Collection;
@@ -385,9 +387,11 @@ public interface DataView {
      *
      * @param path The path of the value to get
      * @param clazz The class of the {@link DataSerializable}
+     * @param game The game to retrieve necessary services from
      * @param <T> The type of {@link DataSerializable} object
      * @return The deserialized object, if available
      */
-    <T extends DataSerializable> Optional<T> getSerializable(DataQuery path, Class<T> clazz);
+    <T extends DataSerializable> Optional<T> getSerializable(DataQuery path,
+            Class<T> clazz, Game game);
 
 }

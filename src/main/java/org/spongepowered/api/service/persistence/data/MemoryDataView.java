@@ -24,35 +24,40 @@
  */
 package org.spongepowered.api.service.persistence.data;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+
+import org.spongepowered.api.Game;
+import org.spongepowered.api.service.persistence.DataSerializable;
+import org.spongepowered.api.util.PrimitiveUtil;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
-import org.spongepowered.api.service.persistence.DataSerializable;
-import org.spongepowered.api.util.PrimitiveUtil;
-
-import java.util.*;
 
 /**
  * Default implementation of a {@link DataView} being used in memory.
  */
 public class MemoryDataView implements DataView {
 
-    protected final Map<String, Object> map = new LinkedHashMap<String, Object>();
+    protected final Map<String, Object> map = Maps.newLinkedHashMap();
     private final DataContainer container;
     private final DataView parent;
     private final DataQuery path;
 
     protected MemoryDataView() {
         if (!(this instanceof DataContainer)) {
-            throw new IllegalStateException("Cannot construct a root MemoryDataView without a container!");
+            throw new IllegalStateException(
+                    "Cannot construct a root MemoryDataView without a "
+                            + "container!");
         }
         this.path = new DataQuery();
         this.parent = this;
@@ -61,15 +66,10 @@ public class MemoryDataView implements DataView {
 
     protected MemoryDataView(DataView parent, DataQuery path) {
         checkArgument(path.getParts().size() >= 1,
-                      "Path must have at least one part");
+                "Path must have at least one part");
         this.parent = parent;
         this.container = parent.getContainer();
         this.path = parent.getCurrentPath().then(path);
-    }
-
-    @Override
-    public void remove(DataQuery path) {
-        checkNotNull(path);
     }
 
     @Override
@@ -100,7 +100,8 @@ public class MemoryDataView implements DataView {
 
     @Override
     public Map<DataQuery, Object> getValues(boolean deep) {
-        ImmutableMap.Builder<DataQuery, Object> builder = ImmutableMap.builder();
+        ImmutableMap.Builder<DataQuery, Object> builder = ImmutableMap
+                .builder();
 
         return builder.build();
     }
@@ -119,7 +120,8 @@ public class MemoryDataView implements DataView {
             if (!subViewOptional.isPresent()) {
                 return false;
             }
-            List<String> subParts = Lists.newArrayListWithCapacity(queryParts.size() - 1);
+            List<String> subParts = Lists
+                    .newArrayListWithCapacity(queryParts.size() - 1);
             for (int i = 1; i < queryParts.size(); i++) {
                 subParts.add(queryParts.get(i).asString("."));
             }
@@ -154,7 +156,8 @@ public class MemoryDataView implements DataView {
         } else {
             subView = subViewOptional.get();
         }
-        List<String> subParts = Lists.newArrayListWithCapacity(queryParts.size() - 1);
+        List<String> subParts = Lists
+                .newArrayListWithCapacity(queryParts.size() - 1);
         for (int i = 1; i < queryParts.size(); i++) {
             subParts.add(queryParts.get(i).asString("."));
         }
@@ -180,7 +183,8 @@ public class MemoryDataView implements DataView {
             } else {
                 subView = subViewOptional.get();
             }
-            List<String> subParts = Lists.newArrayListWithCapacity(parts.size() - 1);
+            List<String> subParts = Lists
+                    .newArrayListWithCapacity(parts.size() - 1);
             for (int i = 1; i < parts.size(); i++) {
                 subParts.add(parts.get(i));
             }
@@ -188,6 +192,11 @@ public class MemoryDataView implements DataView {
         } else {
             this.map.put(parts.get(0), value);
         }
+    }
+
+    @Override
+    public void remove(DataQuery path) {
+        checkNotNull(path);
     }
 
     @Override
@@ -205,12 +214,14 @@ public class MemoryDataView implements DataView {
             this.map.put(key.getParts().get(0), result);
             return result;
         } else {
-            List<String> subParts = Lists.newArrayListWithCapacity(queryParts.size() - 1);
+            List<String> subParts = Lists
+                    .newArrayListWithCapacity(queryParts.size() - 1);
             for (int i = 1; i < sz; i++) {
                 subParts.add(queryParts.get(i).asString('.'));
             }
             DataQuery subQuery = new DataQuery(subParts);
-            DataView subView = (DataView) this.map.get(queryParts.get(0).asString('.'));
+            DataView subView = (DataView) this.map
+                    .get(queryParts.get(0).asString('.'));
             if (subView == null) {
                 subView = new MemoryDataView(this.parent, queryParts.get(0));
                 this.map.put(queryParts.get(0).asString('.'), subView);
@@ -226,9 +237,14 @@ public class MemoryDataView implements DataView {
 
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             if (entry.getValue() instanceof Map) {
-                section.createView(new DataQuery('.', entry.getKey().toString()), (Map<?, ?>) entry.getValue());
+                section.createView(
+                        new DataQuery('.',
+                                entry.getKey().toString()),
+                        (Map<?, ?>) entry.getValue());
             } else {
-                section.set(new DataQuery('.', entry.getKey().toString()), entry.getValue());
+                section.set(new DataQuery('.',
+                                entry.getKey().toString()),
+                        entry.getValue());
             }
         }
         return section;
@@ -289,12 +305,14 @@ public class MemoryDataView implements DataView {
         }
         return Optional.absent();
     }
+
     @Override
     public Optional<List<?>> getList(DataQuery path) {
         Optional<Object> val = get(path);
         if (val.isPresent()) {
             if (val.get() instanceof List<?>) {
-                return Optional.<List<?>>of(ImmutableList.copyOf((List<?>) val.get()));
+                return Optional.<List<?>>of(
+                        ImmutableList.copyOf((List<?>) val.get()));
             }
         }
         return Optional.absent();
@@ -487,12 +505,14 @@ public class MemoryDataView implements DataView {
             }
         }
 
-        return Optional.of((List<Map<?,?>>) builder.build());
+        return Optional.of((List<Map<?, ?>>) builder.build());
     }
 
     @Override
-    public <T extends DataSerializable> Optional<T> getSerializable(DataQuery path, Class<T> clazz) {
-        return null; // TODO implement
+    public <T extends DataSerializable> Optional<T> getSerializable(
+            DataQuery path, Class<T> clazz, Game game) {
+        // TODO
+        return Optional.absent();
     }
 
 }
