@@ -44,7 +44,7 @@ targetCompatibility = '1.6'
 // Project repositories
 repositories {
     mavenCentral()
-    maven {
+	maven {
         name 'sonatypeSnapshot'
         url 'https://oss.sonatype.org/content/repositories/snapshots/'
     }
@@ -72,7 +72,7 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.9.0'
 
     checkstyle 'org.spongepowered:checkstyle:6.1.1-sponge1'
-
+    
     // maven
     deployerJars 'org.apache.maven.wagon:wagon-ftp:2.7'
 }
@@ -141,14 +141,14 @@ jar.manifest.mainAttributes(
         "Implementation-Vendor": url)
 
 task sourceJar(type: Jar) {
-    from sourceSets.main.java
-    from sourceSets.main.resources
-    classifier = "sources"
+	from sourceSets.main.java
+	from sourceSets.main.resources
+	classifier = "sources"
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    from javadoc.destinationDir
-    classifier = "javadoc"
+	from javadoc.destinationDir
+	classifier = "javadoc"
 }
 
 artifacts {
