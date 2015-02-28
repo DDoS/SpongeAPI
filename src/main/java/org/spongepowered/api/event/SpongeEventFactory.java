@@ -696,7 +696,8 @@ public final class SpongeEventFactory {
      * @param rotation The rotation the entity is facing
      * @return A new instance of the event
      */
-    public static EntityMoveEvent createEntityMove(Game game, Entity entity, Location oldLocation, Location newLocation, Vector3f rotation) {
+    public static EntityMoveEvent createEntityMove(Game game, Entity entity,
+            Location oldLocation, Location newLocation, Vector3f rotation) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
         values.put("entity", entity);
@@ -1239,7 +1240,8 @@ public final class SpongeEventFactory {
      * @param rotation The rotation the entity is facing
      * @return A new instance of the event
      */
-    public static PlayerMoveEvent createPlayerMove(Game game, Player player, Location oldLocation, Location newLocation, Vector3f rotation) {
+    public static PlayerMoveEvent createPlayerMove(Game game, Player player,
+            Location oldLocation, Location newLocation, Vector3f rotation) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
         values.put("entity", player);

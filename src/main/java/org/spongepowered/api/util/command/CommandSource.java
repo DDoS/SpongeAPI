@@ -37,6 +37,13 @@ import org.spongepowered.api.text.Text;
 public interface CommandSource extends Subject {
 
     /**
+     * Gets the name identifying this command source.
+     *
+     * @return The name of this command source
+     */
+    String getName();
+
+    /**
      * Sends the formatted text message(s) to source when possible. If text formatting
      * is not supported in the implementation it will be displayed as plain text.
      *
