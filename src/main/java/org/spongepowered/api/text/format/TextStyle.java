@@ -164,7 +164,7 @@ public class TextStyle {
     }
 
     /**
-     * Returns a new text style with the underlineproperty changed.
+     * Returns a new text style with the underline property changed.
      *
      * @param underline Whether text where the new style is applied is underline
      * @return The new text style
@@ -282,19 +282,11 @@ public class TextStyle {
      */
     public boolean contains(TextStyle... styles) {
         for (TextStyle style : styles) {
-            if (!propContains(this.bold, style.bold)) {
-                return false;
-            }
-            if (!propContains(this.italic, style.italic)) {
-                return false;
-            }
-            if (!propContains(this.underline, style.underline)) {
-                return false;
-            }
-            if (!propContains(this.strikethrough, style.strikethrough)) {
-                return false;
-            }
-            if (!propContains(this.obfuscated, style.obfuscated)) {
+            if (!propContains(this.bold, style.bold)
+                    || !propContains(this.italic, style.italic)
+                    || !propContains(this.underline, style.underline)
+                    || !propContains(this.strikethrough, style.strikethrough)
+                    || !propContains(this.obfuscated, style.obfuscated)) {
                 return false;
             }
         }
