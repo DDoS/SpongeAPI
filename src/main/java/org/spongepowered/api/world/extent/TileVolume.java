@@ -30,9 +30,9 @@ import org.spongepowered.api.block.data.TileEntity;
 import java.util.Collection;
 
 /**
- * A volume containing {@link TileEntity}s.
+ * A block volume that also contains {@link TileEntity} instances.
  */
-public interface TileVolume {
+public interface TileVolume extends BlockVolume {
 
     /**
      * Return a collection of tile entities contained within this volume,
