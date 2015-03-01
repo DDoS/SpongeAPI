@@ -24,6 +24,8 @@
  */
 package org.spongepowered.api.text.format;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.base.Optional;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.text.OptBool;
@@ -60,27 +62,27 @@ public class TextStyle {
     /**
      * Whether text where this style is applied is bolded.
      */
-    private final Optional<Boolean> bold;
+    protected final Optional<Boolean> bold;
 
     /**
      * Whether text where this style is applied is italicized.
      */
-    private final Optional<Boolean> italic;
+    protected final Optional<Boolean> italic;
 
     /**
      * Whether text where this style is applied is underlined.
      */
-    private final Optional<Boolean> underline;
+    protected final Optional<Boolean> underline;
 
     /**
      * Whether text where this style is applied has a strikethrough.
      */
-    private final Optional<Boolean> strikethrough;
+    protected final Optional<Boolean> strikethrough;
 
     /**
      * Whether text where this style is applied is obfuscated.
      */
-    private final Optional<Boolean> obfuscated;
+    protected final Optional<Boolean> obfuscated;
 
     /**
      * Constructs a new TextStyle.
@@ -313,7 +315,8 @@ public class TextStyle {
      * @return True if the given text styles are contained in this text style
      */
     public boolean contains(TextStyle... styles) {
-        for (TextStyle style : styles) {
+        for (TextStyle style : checkNotNull(styles, "styles")) {
+            checkNotNull(style, "style");
             if (!propContains(this.bold, style.bold)
                     || !propContains(this.italic, style.italic)
                     || !propContains(this.underline, style.underline)
@@ -375,9 +378,12 @@ public class TextStyle {
      * @return The composed style
      */
     private TextStyle compose(TextStyle[] styles, boolean negate) {
-
+        checkNotNull(styles, "styles");
         if (styles.length == 0) {
             return this;
+        } else if (this.isEmpty() && styles.length == 1) {
+            TextStyle style = checkNotNull(styles[0], "style");
+            return negate ? style.negate() : style;
         }
 
         Optional<Boolean> boldAcc = this.bold;
@@ -388,6 +394,7 @@ public class TextStyle {
 
         if (negate) {
             for (TextStyle style : styles) {
+                checkNotNull(style, "style");
                 boldAcc = propCompose(boldAcc, propNegate(style.bold));
                 italicAcc = propCompose(italicAcc, propNegate(style.italic));
                 underlineAcc = propCompose(underlineAcc, propNegate(style.underline));
@@ -396,6 +403,7 @@ public class TextStyle {
             }
         } else {
             for (TextStyle style : styles) {
+                checkNotNull(style, "style");
                 boldAcc = propCompose(boldAcc, style.bold);
                 italicAcc = propCompose(italicAcc, style.italic);
                 underlineAcc = propCompose(underlineAcc, style.underline);
