@@ -49,6 +49,13 @@ public interface Tile extends DataSerializable {
     BlockLoc getBlock();
 
     /**
+     * Checks for whether the tile is currently valid or not.
+     *
+     * @return True if the tile is valid, false if
+     */
+    boolean isValid();
+
+    /**
      * Changes the validation of this tile.
      *
      * <p>If the tile entity is invalid, no processing will be done on the tile entity
@@ -60,12 +67,5 @@ public interface Tile extends DataSerializable {
      * @param valid True if the tile should be validated, or false if it should be invalidated
      */
     void setValid(boolean valid);
-
-    /**
-     * Checks for whether the tile is currently valid or not.
-     *
-     * @return True if the tile is valid, false if
-     */
-    boolean isValid();
-
+    
 }
