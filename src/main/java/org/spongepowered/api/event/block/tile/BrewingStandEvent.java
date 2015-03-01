@@ -22,28 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.spongepowered.api.event.block.tile;
 
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
+import org.spongepowered.api.block.tile.lockable.BrewingStand;
+import org.spongepowered.api.event.inventory.BlockInventoryEvent;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * An event related to a {@link BrewingStand}.
  */
-public interface NotePitch {
+public interface BrewingStandEvent extends TileEvent, BlockInventoryEvent {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the {@link BrewingStand} related to this event.
      *
-     * @return The id
+     * @return The brewing stand
      */
-    byte getId();
+    BrewingStand getBrewingStand();
 
-    /**
-     * Gets the name of this pitch.
-     *
-     * @return The name
-     */
-    String getName();
-
+    @Override
+    BrewingStand getTile();
 }

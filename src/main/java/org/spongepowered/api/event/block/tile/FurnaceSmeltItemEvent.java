@@ -22,28 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.spongepowered.api.event.block.tile;
 
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
+import org.spongepowered.api.block.tile.lockable.Furnace;
+import org.spongepowered.api.event.inventory.ItemResultEvent;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.util.event.Cancellable;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * An event that occurs when a {@link Furnace} smelt an item.
  */
-public interface NotePitch {
+public interface FurnaceSmeltItemEvent extends FurnaceEvent, ItemResultEvent, Cancellable {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the freshly cooked {@link ItemStack}.
      *
-     * @return The id
+     * <p>A {@link Furnace} cooks {@link ItemStack}s with fuel and produces
+     * new items.</p>
+     *
+     * @return The cooked item
      */
-    byte getId();
+    ItemStack getCookedItem();
 
     /**
-     * Gets the name of this pitch.
+     * Sets the cooked {@link ItemStack}.
      *
-     * @return The name
+     * <p>A {@link Furnace} cooks {@link ItemStack}s with fuel and produces
+     * new items.</p>
+     *
+     * @param item The resulting cooked item
      */
-    String getName();
+    void setCookedItem(ItemStack item);
+
+    /**
+     * Gets the source {@link ItemStack} that was cooked.
+     *
+     * @return The source item
+     */
+    ItemStack getSourceItem();
 
 }

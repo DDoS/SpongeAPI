@@ -22,28 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.spongepowered.api.event.block.tile;
 
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
+import org.spongepowered.api.block.tile.Sign;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * An event that is associated with a {@link Sign}.
  */
-public interface NotePitch {
+public interface SignEvent extends TileEvent {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the {@link Sign} related to this event.
      *
-     * @return The id
+     * @return The sign related to this event
      */
-    byte getId();
+    Sign getSign();
 
-    /**
-     * Gets the name of this pitch.
-     *
-     * @return The name
-     */
-    String getName();
-
+    @Override
+    Sign getTile();
 }

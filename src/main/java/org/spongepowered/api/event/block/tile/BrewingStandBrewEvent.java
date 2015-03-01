@@ -22,28 +22,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.spongepowered.api.event.block.tile;
 
-package org.spongepowered.api.block.meta;
+import org.spongepowered.api.block.tile.lockable.BrewingStand;
+import org.spongepowered.api.event.inventory.BulkItemResultEvent;
+import org.spongepowered.api.item.inventory.ItemStack;
 
-import org.spongepowered.api.block.tile.Note;
+import java.util.List;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * An event when a {@link BrewingStand} freshly brews {@link ItemStack}s into new potions.
  */
-public interface NotePitch {
+public interface BrewingStandBrewEvent extends BrewingStandEvent, BulkItemResultEvent {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the orignal {@link ItemStack}s that were being brewed.
      *
-     * @return The id
+     * @return The original item stacks
      */
-    byte getId();
+    List<ItemStack> getSourceItems();
 
     /**
-     * Gets the name of this pitch.
+     * Gets the fuel source being brewed into the source items.
      *
-     * @return The name
+     * @return The fuel source being brewed into the source items
      */
-    String getName();
+    ItemStack getFuelSource();
 
+    /**
+     * Gets the final brewed items.
+     *
+     * @return The resulting brewed items
+     */
+    List<ItemStack> getBrewedItems();
+
+    /**
+     * Sets the final brewed items.
+     *
+     * <p>Note that the brewed items must not exceed the inventory size of the {@link BrewingStand}.</p>
+     *
+     * @param items The newly brewed items
+     */
+    void setBrewedItems(List<ItemStack> items);
 }

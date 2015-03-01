@@ -22,28 +22,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.spongepowered.api.event.block.tile;
 
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
+import org.spongepowered.api.block.tile.Sign;
+import org.spongepowered.api.text.message.Message;
+import org.spongepowered.api.util.event.Cancellable;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * An event when a {@link Sign} is changed.
+ *
+ * <p>Examples may include: A player writing a sign.</p>
  */
-public interface NotePitch {
+public interface SignChangeEvent extends SignEvent, Cancellable {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the previous messages in order of line number of the sign.
      *
-     * @return The id
+     * @return The previous messages
      */
-    byte getId();
+    Message[] getPreviousMessages();
 
     /**
-     * Gets the name of this pitch.
+     * Gets the changed messages.
      *
-     * @return The name
+     * @return The new messages
      */
-    String getName();
+    Message[] getNewMessages();
+
+    /**
+     * Sets the changed messages.
+     *
+     * @param messages The new messages
+     */
+    void setNewMessages(Message[] messages);
 
 }

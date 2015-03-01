@@ -22,28 +22,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.spongepowered.api.block.tile.lockable;
 
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
+import org.spongepowered.api.block.tile.Tile;
+import org.spongepowered.api.item.inventory.Carrier;
+import org.spongepowered.api.item.inventory.types.TileInventory;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * A representation of the persisted data for a tile entity with a 'lock'.
+ * <p>
+ * A tile entity having a lock token set implies that it may only be used by a
+ * player who is holding an item with a name equal to the lock token.
+ * </p>
  */
-public interface NotePitch {
+public interface Lockable extends Tile, Carrier {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the lock token for this tile entity. Will be empty if this tile
+     * entity is not locked.
      *
-     * @return The id
+     * @return The lock token
      */
-    byte getId();
+    String getLockToken();
 
     /**
-     * Gets the name of this pitch.
+     * Sets the lock token for this tile entity.
      *
-     * @return The name
+     * @param token The new lock token
      */
-    String getName();
+    void setLockToken(String token);
 
+    /* (non-Javadoc)
+     * @see org.spongepowered.api.item.inventory.Carrier#getInventory()
+     */
+    @Override
+    TileInventory<Lockable> getInventory();
 }

@@ -22,28 +22,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
+package org.spongepowered.api.block.tile;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * Represents a Redstone Comparator.
  */
-public interface NotePitch {
+public interface Comparator extends Tile {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the output signal strength.
      *
-     * @return The id
+     * @return The signal strength
      */
-    byte getId();
+    int getOutputSignal();
 
     /**
-     * Gets the name of this pitch.
+     * Sets the output signal strength.
      *
-     * @return The name
+     * @param signal The new signal strength
      */
-    String getName();
+    void setOutputSignal(int signal);
 
 }

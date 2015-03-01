@@ -23,27 +23,11 @@
  * THE SOFTWARE.
  */
 
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
+package org.spongepowered.api.block.tile;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * Represents an Enchantment Table.
  */
-public interface NotePitch {
-
-    /**
-     * Gets the id of this {@link NotePitch}.
-     *
-     * @return The id
-     */
-    byte getId();
-
-    /**
-     * Gets the name of this pitch.
-     *
-     * @return The name
-     */
-    String getName();
+public interface EnchantmentTable extends Tile {
 
 }

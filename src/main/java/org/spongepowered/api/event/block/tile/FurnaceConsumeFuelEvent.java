@@ -22,28 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.spongepowered.api.event.block.tile;
 
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
+import com.google.common.base.Optional;
+import org.spongepowered.api.block.tile.lockable.Furnace;
+import org.spongepowered.api.event.inventory.ItemResultEvent;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * An event when a {@link Furnace} consumes an {@link ItemStack} as fuel.
  */
-public interface NotePitch {
+public interface FurnaceConsumeFuelEvent extends FurnaceEvent, ItemResultEvent {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the burned item.
      *
-     * @return The id
+     * <p>A {@link Furnace} uses {@link ItemStack}s to fuel itself, and after the fuel is
+     * spent, the item is burned.</p>
+     *
+     * @return The burned item
      */
-    byte getId();
+    ItemStack getBurnedItem();
 
     /**
-     * Gets the name of this pitch.
+     * Gets the remaining fuel {@link ItemStack} within this furnace.
      *
-     * @return The name
+     * <p>Fuel burns and may run out.</p>
+     *
+     * @return The fuel item, if available
      */
-    String getName();
+    Optional<ItemStack> getRemainingFuel();
 
 }

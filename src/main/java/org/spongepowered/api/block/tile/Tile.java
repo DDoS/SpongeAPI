@@ -23,27 +23,35 @@
  * THE SOFTWARE.
  */
 
-package org.spongepowered.api.block.meta;
+package org.spongepowered.api.block.tile;
 
-import org.spongepowered.api.block.tile.Note;
+import org.spongepowered.api.block.BlockLoc;
+import org.spongepowered.api.service.persistence.DataSerializable;
+import org.spongepowered.api.world.World;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * Represents an abstract Tile Entity.
  */
-public interface NotePitch {
+public interface Tile extends DataSerializable {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the world that this Tile is within.
      *
-     * @return The id
+     * @return The world
      */
-    byte getId();
+    World getWorld();
 
     /**
-     * Gets the name of this pitch.
+     * Gets the BlockLoc that this tile is in.
      *
-     * @return The name
+     * @return The BlockLoc
      */
-    String getName();
+    BlockLoc getBlock();
+
+    /**
+     * Marks this tile entity to reset its data in the very near future, preferably
+     * within one game tick.
+     */
+    void reset();
 
 }

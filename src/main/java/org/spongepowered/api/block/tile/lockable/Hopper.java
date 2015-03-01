@@ -23,27 +23,24 @@
  * THE SOFTWARE.
  */
 
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
+package org.spongepowered.api.block.tile.lockable;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * Represents a Hopper.
  */
-public interface NotePitch {
+public interface Hopper extends Lockable {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the remaining time before the next item will be transfered.
      *
-     * @return The id
+     * @return The remaining time, in ticks
      */
-    byte getId();
+    int getTransferCooldown();
 
     /**
-     * Gets the name of this pitch.
+     * Sets the cooldown before the next item will be transfered.
      *
-     * @return The name
+     * @param time The new time, in ticks
      */
-    String getName();
-
+    void setTransferCooldown(int time);
 }

@@ -25,13 +25,13 @@
 package org.spongepowered.api.item.inventory.types;
 
 import com.google.common.base.Optional;
-import org.spongepowered.api.block.data.TileEntity;
+import org.spongepowered.api.block.tile.Tile;
 import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.item.inventory.Carrier;
 
 /**
  * An {@link org.spongepowered.api.item.inventory.Inventory} which is owned by a
- * {@link TileEntity}. In Sponge, a TE is never seen as an Inventory itself and
+ * {@link Tile}. In Sponge, a TE is never seen as an Inventory itself and
  * Tile Entities are instead considered to "own" their own Inventory (much like
  * equipable entities do). Underlying implementations are of course completely
  * at liberty to return the TE object directly but as far as consumers are
@@ -49,7 +49,7 @@ import org.spongepowered.api.item.inventory.Carrier;
  *
  * @param <T> Tile entity type, the specified TE must be a {@link Carrier}
  */
-public interface TileInventory<T extends TileEntity & Carrier>
+public interface TileInventory<T extends Tile & Carrier>
         extends PersistentInventory, Interactable<Human>, CarriedInventory<T> {
 
     /**

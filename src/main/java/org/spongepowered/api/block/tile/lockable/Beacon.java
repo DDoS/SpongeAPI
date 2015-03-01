@@ -22,28 +22,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.spongepowered.api.block.tile.lockable;
 
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
+import com.google.common.base.Optional;
+import org.spongepowered.api.potion.PotionEffectType;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * Represents a Beacon.
  */
-public interface NotePitch {
+public interface Beacon extends Lockable {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the primary effect provided by this beacon.
      *
-     * @return The id
+     * @return The primary effect
      */
-    byte getId();
+    Optional<PotionEffectType> getPrimaryEffect();
 
     /**
-     * Gets the name of this pitch.
+     * Sets the primary effect for this beacon.
      *
-     * @return The name
+     * @param effect The new primary effect
      */
-    String getName();
+    void setPrimaryEffect(PotionEffectType effect);
+
+    /**
+     * Gets the secondary effect provided by this beacon.
+     *
+     * @return The secondary effect
+     */
+    Optional<PotionEffectType> getSecondaryEffect();
+
+    /**
+     * Sets the secondary effect for this beacon.
+     *
+     * @param effect The new secondary effect
+     */
+    void setSecondaryEffect(PotionEffectType effect);
+
+    /**
+     * Clears all selected potion effects for this beacon.
+     */
+    void clearEffects();
+
+    /**
+     * Gets the number of completed levels of valid beacon structure blocks
+     * beneath this beacon.
+     *
+     * @return The number of levels
+     */
+    int getCompletedLevels();
 
 }

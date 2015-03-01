@@ -23,27 +23,13 @@
  * THE SOFTWARE.
  */
 
-package org.spongepowered.api.block.meta;
+package org.spongepowered.api.block.tile.lockable;
 
-import org.spongepowered.api.block.tile.Note;
+import org.spongepowered.api.entity.projectile.source.BlockProjectileSource;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * Represents a Dispenser.
  */
-public interface NotePitch {
-
-    /**
-     * Gets the id of this {@link NotePitch}.
-     *
-     * @return The id
-     */
-    byte getId();
-
-    /**
-     * Gets the name of this pitch.
-     *
-     * @return The name
-     */
-    String getName();
+public interface Dispenser extends Lockable, BlockProjectileSource {
 
 }

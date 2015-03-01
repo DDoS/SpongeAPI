@@ -22,28 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.spongepowered.api.event.block.tile;
 
-package org.spongepowered.api.block.meta;
+import org.spongepowered.api.block.tile.lockable.Furnace;
+import org.spongepowered.api.event.inventory.BlockInventoryEvent;
 
-import org.spongepowered.api.block.tile.Note;
+public interface FurnaceEvent extends TileEvent, BlockInventoryEvent {
 
-/**
- * Represents a NotePitch which may be played by a {@link Note} block.
- */
-public interface NotePitch {
-
-    /**
-     * Gets the id of this {@link NotePitch}.
-     *
-     * @return The id
-     */
-    byte getId();
-
-    /**
-     * Gets the name of this pitch.
-     *
-     * @return The name
-     */
-    String getName();
-
+    @Override
+    Furnace getTile();
 }

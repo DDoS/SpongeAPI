@@ -23,27 +23,27 @@
  * THE SOFTWARE.
  */
 
-package org.spongepowered.api.block.meta;
+package org.spongepowered.api.block.tile;
 
-import org.spongepowered.api.block.tile.Note;
+import org.spongepowered.api.block.meta.NotePitch;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * Represents a note block.
  */
-public interface NotePitch {
+public interface Note extends Tile {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the note played by this note block.
      *
-     * @return The id
+     * @return The note
      */
-    byte getId();
+    NotePitch getNote();
 
     /**
-     * Gets the name of this pitch.
+     * Sets the note to be played by this note block.
      *
-     * @return The name
+     * @param note The new note
      */
-    String getName();
+    void setNote(NotePitch note);
 
 }

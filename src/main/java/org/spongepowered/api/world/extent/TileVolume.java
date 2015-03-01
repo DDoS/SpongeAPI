@@ -28,12 +28,12 @@ import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import org.spongepowered.api.block.BlockLoc;
-import org.spongepowered.api.block.data.TileEntity;
+import org.spongepowered.api.block.tile.Tile;
 
 import java.util.Collection;
 
 /**
- * A block volume that also contains {@link TileEntity} instances.
+ * A block volume that also contains {@link Tile} instances.
  */
 public interface TileVolume extends BlockVolume {
 
@@ -47,7 +47,7 @@ public interface TileVolume extends BlockVolume {
      *
      * @return A collection of entities
      */
-    Collection<TileEntity> getTileEntities();
+    Collection<Tile> getTileEntities();
 
     /**
      * Return a collection of tile entities contained within this volume,
@@ -62,7 +62,7 @@ public interface TileVolume extends BlockVolume {
      * @param filter The filter to apply to the returned entities
      * @return A collection of filtered entities
      */
-    Collection<TileEntity> getTileEntities(Predicate<TileEntity> filter);
+    Collection<Tile> getTileEntities(Predicate<Tile> filter);
 
     /**
      * Gets the tile entity at the given position, if it exists.
@@ -70,7 +70,7 @@ public interface TileVolume extends BlockVolume {
      * @param position The position
      * @return The tile entity, or {@link Optional#absent()}
      */
-    Optional<TileEntity> getTileEntity(Vector3d position);
+    Optional<Tile> getTileEntity(Vector3d position);
 
     /**
      * Get the tile entity at the given position, if it exists.
@@ -80,7 +80,7 @@ public interface TileVolume extends BlockVolume {
      * @param z The Z position
      * @return The tile entity, or {@link Optional#absent()}
      */
-    Optional<TileEntity> getTileEntity(int x, int y, int z);
+    Optional<Tile> getTileEntity(int x, int y, int z);
 
     /**
      * Get the tile entity at the block in the given location, if it exists.
@@ -88,6 +88,6 @@ public interface TileVolume extends BlockVolume {
      * @param blockLoc The block position
      * @return The tile entity, or {@link Optional#absent()}
      */
-    Optional<TileEntity> getTileEntity(BlockLoc blockLoc);
+    Optional<Tile> getTileEntity(BlockLoc blockLoc);
 
 }

@@ -22,28 +22,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
+package org.spongepowered.api.block.tile.lockable;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * Represents a Furnace.
  */
-public interface NotePitch {
+public interface Furnace extends Lockable {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the remaining time until another piece of fuel will be consumed.
+     * Will be zero if the furnace is not currently lit.
      *
-     * @return The id
+     * @return The remaining time, in ticks
      */
-    byte getId();
+    int getRemainingBurnTime();
 
     /**
-     * Gets the name of this pitch.
+     * Sets the remaining time until a new piece of fuel will be consumed.
      *
-     * @return The name
+     * @param time The new time, in ticks
      */
-    String getName();
+    void setRemainingBurnTime(int time);
+
+    /**
+     * Gets the remaining time until the next item is cooked.
+     *
+     * @return The remaining time, in ticks
+     */
+    int getRemainingCookTime();
+
+    /**
+     * Sets the remaining time until a new item is cooked.
+     *
+     * @param time The new time, in ticks
+     */
+    void setRemainingCookTime(int time);
 
 }

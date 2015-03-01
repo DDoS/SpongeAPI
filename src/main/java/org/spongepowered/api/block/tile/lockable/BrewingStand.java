@@ -22,28 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
+package org.spongepowered.api.block.tile.lockable;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * Represents a Brewing Stand.
  */
-public interface NotePitch {
+public interface BrewingStand extends Lockable {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets the remaining time until the brewing is complete. Will be zero if
+     * the brewing stand is not currently brewing anything.
      *
-     * @return The id
+     * @return The remaining time, in ticks
      */
-    byte getId();
+    int getRemainingBrewTime();
 
     /**
-     * Gets the name of this pitch.
+     * Sets the remaining time until the brewing is complete. This will only
+     * have effect if the current items within the brewing stand are valid.
      *
-     * @return The name
+     * @param time The new remaining time, in ticks
      */
-    String getName();
+    void setRemainingBrewTime(int time);
 
 }

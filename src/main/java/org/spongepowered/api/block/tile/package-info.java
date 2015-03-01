@@ -23,27 +23,4 @@
  * THE SOFTWARE.
  */
 
-package org.spongepowered.api.block.meta;
-
-import org.spongepowered.api.block.tile.Note;
-
-/**
- * Represents a NotePitch which may be played by a {@link Note} block.
- */
-public interface NotePitch {
-
-    /**
-     * Gets the id of this {@link NotePitch}.
-     *
-     * @return The id
-     */
-    byte getId();
-
-    /**
-     * Gets the name of this pitch.
-     *
-     * @return The name
-     */
-    String getName();
-
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.api.block.tile;

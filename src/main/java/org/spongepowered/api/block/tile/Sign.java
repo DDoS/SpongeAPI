@@ -23,27 +23,48 @@
  * THE SOFTWARE.
  */
 
-package org.spongepowered.api.block.meta;
+package org.spongepowered.api.block.tile;
 
-import org.spongepowered.api.block.tile.Note;
+import org.spongepowered.api.text.message.Message;
 
 /**
- * Represents a NotePitch which may be played by a {@link Note} block.
+ * Represents for a Sign.
  */
-public interface NotePitch {
+public interface Sign extends Tile {
 
     /**
-     * Gets the id of this {@link NotePitch}.
+     * Gets all lines of text on the sign.
      *
-     * @return The id
+     * @return The lines of text
      */
-    byte getId();
+    Message[] getLines();
 
     /**
-     * Gets the name of this pitch.
+     * Sets the lines of text on the sign. Any lines past the maximum number of
+     * lines displayable on the sign will be ignored.
      *
-     * @return The name
+     * @param lines The new lines
      */
-    String getName();
+    void setLines(Message... lines);
+
+    /**
+     * Gets the line at the given index.
+     *
+     * @param index The index
+     * @return The line of text
+     * @throws IndexOutOfBoundsException If the index is outside of the allowed
+     *             indices
+     */
+    Message getLine(int index) throws IndexOutOfBoundsException;
+
+    /**
+     * Sets the line at the given index.
+     *
+     * @param index The index to set the line at
+     * @param text The new text
+     * @throws IndexOutOfBoundsException If the index is outside
+     *            of the allowed indices
+     */
+    void setLine(int index, Message text) throws IndexOutOfBoundsException;
 
 }
