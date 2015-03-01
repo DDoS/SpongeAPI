@@ -1574,7 +1574,7 @@ public final class SpongeEventFactory {
                                                                     TileInventory<Lockable> inventory, BlockLoc blockLoc) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
-        values.put("tileEntity", brewingStand);
+        values.put("tile", brewingStand);
         values.put("brewingStand", brewingStand);
         values.put("sourceItems", sourceItems);
         values.put("fuelSource", fuelSource);
@@ -1602,7 +1602,7 @@ public final class SpongeEventFactory {
                                                                         Cause cause, TileInventory<Lockable> inventory, BlockLoc loc) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
-        values.put("tileEntity", furnace);
+        values.put("tile", furnace);
         values.put("burnedItem", burnedItem);
         values.put("remainingFuel", Optional.fromNullable(remainingFuel));
         values.put("result", Optional.fromNullable(remainingFuel));
@@ -1628,7 +1628,7 @@ public final class SpongeEventFactory {
                                                                     Cause cause, TileInventory<Lockable> inventory, BlockLoc loc) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
-        values.put("tileEntity", furnace);
+        values.put("tile", furnace);
         values.put("cookedItem", cookedItem);
         values.put("sourceItem", sourceItem);
         values.put("result", Optional.fromNullable(cookedItem));
