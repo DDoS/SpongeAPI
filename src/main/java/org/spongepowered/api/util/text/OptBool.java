@@ -69,4 +69,32 @@ public final class OptBool {
         }
     }
 
+    /**
+     * Coerces the given {@code Optional&lt;Boolean&gt;} into one of the three stored states.
+     *
+     * @param bool The boolean
+     * @return The constructed Optional, or {@link Optional#absent()}
+     */
+    public static Optional<Boolean> of(Optional<Boolean> bool) {
+        if (bool.isPresent()) {
+            return of(bool.get());
+        } else {
+            return ABSENT;
+        }
+    }
+
+    /**
+     * Converts the given {@code Optional&lt;Boolean&gt;} back into a nullable {@link Boolean}.
+     *
+     * @param bool The optional boolean
+     * @return The constructed Optional, or {@link Optional#absent()}
+     */
+    @Nullable public static Boolean get(Optional<Boolean> bool) {
+        if (bool.isPresent()) {
+            return bool.get();
+        } else {
+            return null;
+        }
+    }
+
 }

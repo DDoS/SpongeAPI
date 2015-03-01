@@ -82,6 +82,28 @@ public class TextStyle {
      */
     private final Optional<Boolean> obfuscated;
 
+    /**
+     * Constructs a new TextStyle.
+     *
+     * @param bold Whether text where this style is applied is bolded
+     * @param italic Whether text where this style is applied is italicized
+     * @param underline Whether text where this style is applied is underlined
+     * @param obfuscated Whether text where this style is applied is obfuscated
+     * @param strikethrough Whether text where this style is applied has a strikethrough
+     */
+    TextStyle(@Nullable Boolean bold,
+              @Nullable Boolean italic,
+              @Nullable Boolean underline,
+              @Nullable Boolean strikethrough,
+              @Nullable Boolean obfuscated) {
+        this(
+                OptBool.of(bold),
+                OptBool.of(italic),
+                OptBool.of(underline),
+                OptBool.of(strikethrough),
+                OptBool.of(obfuscated)
+        );
+    }
 
     /**
      * Constructs a new TextStyle.
@@ -442,55 +464,35 @@ public class TextStyle {
      * Minecraft base types. Base extends FormattingCode because it does have a
      * corresponding formatting code; it is a single, pure text style.
      */
-    public static class Base extends TextStyle implements BaseFormatting {
+    public abstract static class Base extends TextStyle implements BaseFormatting {
 
         /**
-         * The name of this Base TextStyle.
-         */
-        private final String name;
-
-        /**
-         * The char code behind this Base TextStyle.
-         */
-        private final char code;
-
-        /**
-         * Constructs a new Base text style.
+         * Constructs a new Base TextStyle.
          *
-         * @param name The name of the TextStyle
-         * @param code The char code behind this TextStyle
          * @param bold Whether text where this style is applied is bolded
          * @param italic Whether text where this style is applied is italicized
          * @param underline Whether text where this style is applied is underlined
          * @param obfuscated Whether text where this style is applied is obfuscated
          * @param strikethrough Whether text where this style is applied has a strikethrough
          */
-        public Base(String name, char code,
-                    Optional<Boolean> bold,
-                    Optional<Boolean> italic,
-                    Optional<Boolean> underline,
-                    Optional<Boolean> strikethrough,
-                    Optional<Boolean> obfuscated) {
-            super(bold, italic, underline, strikethrough, obfuscated);
-            this.name = name;
-            this.code = code;
+        Base(@Nullable Boolean bold,
+                  @Nullable Boolean italic,
+                  @Nullable Boolean underline,
+                  @Nullable Boolean strikethrough,
+                  @Nullable Boolean obfuscated) {
+            super(
+                    bold,
+                    italic,
+                    underline,
+                    strikethrough,
+                    obfuscated
+            );
         }
 
         @Override
         public boolean isComposite() {
             // By definition, base TextStyles are not composites
             return false;
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Override
-        @Deprecated
-        public char getCode() {
-            return this.code;
         }
 
     }
