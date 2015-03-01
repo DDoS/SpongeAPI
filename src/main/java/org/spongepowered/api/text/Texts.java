@@ -154,8 +154,8 @@ public final class Texts {
                     childBuilder = Texts.builder((Translation) obj, new Object[0]); // TODO: Remove explicit array initializer
                 } else if (obj instanceof Selector) {
                     childBuilder = Texts.builder((Selector) obj);
-                } else if (obj instanceof Object) { // TODO: Statistic API
-                    childBuilder = Texts.builder((Object) obj);
+                /*} else if (obj instanceof Object) { // TODO: Statistic API
+                    childBuilder = Texts.builder((Object) obj);*/
                 } else {
                     childBuilder = Texts.builder(String.valueOf(obj));
                 }
