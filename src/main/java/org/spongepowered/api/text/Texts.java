@@ -367,8 +367,8 @@ public final class Texts {
     /**
      * Parses the specified JSON text and returns the parsed result.
      *
-     * <p>Unlike {@link #parseJson(String)} this will ignore some formatting errors
-     * and parse the JSON data more leniently.</p>
+     * <p>Unlike {@link #parseJson(String)} this will ignore some formatting
+     * errors and parse the JSON data more leniently.</p>
      *
      * @param json The JSON text
      * @return The parsed text

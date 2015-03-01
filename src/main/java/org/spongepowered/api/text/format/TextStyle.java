@@ -33,27 +33,23 @@ import org.spongepowered.api.util.text.OptBool;
 import javax.annotation.Nullable;
 
 /**
- * A TextStyle represents an immutable text style of a {@link Text}.
- * It is a utility that is not normally present in Minecraft.
+ * Represents an immutable text style of a {@link Text}. It is a utility that is
+ * not normally present in Minecraft. It can be either empty, a {@link Base}
+ * with an additional legacy formatting code or a composite.
  *
- * <p>
- * Combined styles can be created using {@link TextStyles#of(TextStyle...)} or
- * using one of the {@link #and(TextStyle...)}, {@link #andNot(TextStyle...)}
- * or {@link #negate()} method.
- * </p>
+ * <p>Combined styles can be created using {@link TextStyles#of(TextStyle...)}
+ * or using one of the {@link #and(TextStyle...)}, {@link #andNot(TextStyle...)}
+ * or {@link #negate()} method.</p>
  *
- * <p>
- * Each individual style within a TextStyle, e.g. bold, italic is not just a boolean,
- * but an {@code Optional&lt;Boolean&gt;} since it can be unapplied (or, in Optional terms, "absent").
- * These styles will hereafter be referred to as properties.
- * See the {@link OptBool} utility class for working with properties.
- * </p>
+ * <p>Each individual style within a TextStyle, e.g. bold, italic is not just a
+ * boolean, but an {@code Optional&lt;Boolean&gt;} since it can be unapplied
+ * (or, in Optional terms, "absent"). These styles will hereafter be referred to
+ * as properties.<br> See the {@link OptBool} utility class for working with
+ * properties.</p>
  *
- * <p>
- * Implementation note: Absent styles should not appear in the final chat
- * component JSON. Properties that are set to true or false should appear, even if they
- * override inherited properties.
- * </p>
+ * <p>Implementation note: Absent styles should not appear in the final chat
+ * component JSON. Properties that are set to true or false should appear, even
+ * if they override inherited properties.</p>
  *
  * @see TextStyles
  */
@@ -85,19 +81,20 @@ public class TextStyle {
     protected final Optional<Boolean> obfuscated;
 
     /**
-     * Constructs a new TextStyle.
+     * Constructs a new {@link TextStyle}.
      *
      * @param bold Whether text where this style is applied is bolded
      * @param italic Whether text where this style is applied is italicized
      * @param underline Whether text where this style is applied is underlined
      * @param obfuscated Whether text where this style is applied is obfuscated
-     * @param strikethrough Whether text where this style is applied has a strikethrough
+     * @param strikethrough Whether text where this style is applied has a
+     *        strikethrough
      */
     public TextStyle(@Nullable Boolean bold,
-              @Nullable Boolean italic,
-              @Nullable Boolean underline,
-              @Nullable Boolean strikethrough,
-              @Nullable Boolean obfuscated) {
+            @Nullable Boolean italic,
+            @Nullable Boolean underline,
+            @Nullable Boolean strikethrough,
+            @Nullable Boolean obfuscated) {
         this(
                 OptBool.of(bold),
                 OptBool.of(italic),
@@ -108,19 +105,20 @@ public class TextStyle {
     }
 
     /**
-     * Constructs a new TextStyle.
+     * Constructs a new {@link TextStyle}.
      *
      * @param bold Whether text where this style is applied is bolded
      * @param italic Whether text where this style is applied is italicized
      * @param underline Whether text where this style is applied is underlined
      * @param obfuscated Whether text where this style is applied is obfuscated
-     * @param strikethrough Whether text where this style is applied has a strikethrough
+     * @param strikethrough Whether text where this style is applied has a
+     *        strikethrough
      */
     private TextStyle(Optional<Boolean> bold,
-                        Optional<Boolean> italic,
-                        Optional<Boolean> underline,
-                        Optional<Boolean> strikethrough,
-                        Optional<Boolean> obfuscated) {
+            Optional<Boolean> italic,
+            Optional<Boolean> underline,
+            Optional<Boolean> strikethrough,
+            Optional<Boolean> obfuscated) {
         this.bold = bold;
         this.italic = italic;
         this.underline = underline;
@@ -129,7 +127,7 @@ public class TextStyle {
     }
 
     /**
-     * Constructs an empty TextStyle.
+     * Constructs an empty {@link TextStyle}.
      */
     TextStyle() {
         this(
@@ -143,9 +141,10 @@ public class TextStyle {
     }
 
     /**
-     * Returns whether this text style is a composite of multiple text styles.
+     * Returns whether this {@link TextStyle} is a composite of multiple text
+     * styles.
      *
-     * @return True if this text style is a composite
+     * @return {@code true} if this text style is a composite
      */
     public boolean isComposite() {
         // Return true by default as the TextStyle class is composite by default
@@ -153,7 +152,7 @@ public class TextStyle {
     }
 
     /**
-     * Returns whether this text style has no set properties.
+     * Returns whether this {@link TextStyle} has no set properties.
      *
      * @return {@code true} if this style is empty
      */
@@ -166,7 +165,7 @@ public class TextStyle {
     }
 
     /**
-     * Returns a new text style with the bold property changed.
+     * Returns a new {@link TextStyle} with the bold property changed.
      *
      * @param bold Whether text where the new style is applied is bolded
      * @return The new text style
@@ -182,7 +181,7 @@ public class TextStyle {
     }
 
     /**
-     * Returns a new text style with the italic property changed.
+     * Returns a new {@link TextStyle} with the italic property changed.
      *
      * @param italic Whether text where the new style is applied is italicized
      * @return The new text style
@@ -198,7 +197,7 @@ public class TextStyle {
     }
 
     /**
-     * Returns a new text style with the underline property changed.
+     * Returns a new {@link TextStyle} with the underline property changed.
      *
      * @param underline Whether text where the new style is applied is underline
      * @return The new text style
@@ -214,9 +213,10 @@ public class TextStyle {
     }
 
     /**
-     * Returns a new text style with the strikethrough property changed.
+     * Returns a new {@link TextStyle} with the strikethrough property changed.
      *
-     * @param strikethrough Whether text where the new style is applied has a strikethrough
+     * @param strikethrough Whether text where the new style is applied has a
+     *        strikethrough
      * @return The new text style
      */
     public TextStyle strikethrough(@Nullable Boolean strikethrough) {
@@ -230,9 +230,10 @@ public class TextStyle {
     }
 
     /**
-     * Returns a new text style with the obfuscated property changed.
+     * Returns a new {@link TextStyle} with the obfuscated property changed.
      *
-     * @param obfuscated Whether text where the new style is applied is obfuscated
+     * @param obfuscated Whether text where the new style is applied is
+     *        obfuscated
      * @return The new text style
      */
     public TextStyle obfuscated(@Nullable Boolean obfuscated) {
@@ -248,8 +249,7 @@ public class TextStyle {
     /**
      * Checks for whether text where this style is applied is bolded.
      *
-     * @return The value for the bold property,
-     *      or {@link Optional#absent()}
+     * @return The value for the bold property, or {@link Optional#absent()}
      */
     public Optional<Boolean> isBold() {
         return this.bold;
@@ -258,8 +258,7 @@ public class TextStyle {
     /**
      * Checks for whether text where this style is applied is italicized.
      *
-     * @return The value for the italic property,
-     *      or {@link Optional#absent()}
+     * @return The value for the italic property, or {@link Optional#absent()}
      */
     public Optional<Boolean> isItalic() {
         return this.italic;
@@ -268,8 +267,8 @@ public class TextStyle {
     /**
      * Checks for whether text where this style is applied has an underline.
      *
-     * @return The value for the underline property,
-     *      or {@link Optional#absent()}
+     * @return The value for the underline property, or
+     *         {@link Optional#absent()}
      */
     public Optional<Boolean> hasUnderline() {
         return this.underline;
@@ -278,8 +277,8 @@ public class TextStyle {
     /**
      * Checks for whether text where this style is applied has a strikethrough.
      *
-     * @return The value for the strikethrough property,
-     *      or {@link Optional#absent()}
+     * @return The value for the strikethrough property, or
+     *         {@link Optional#absent()}
      */
     public Optional<Boolean> hasStrikethrough() {
         return this.strikethrough;
@@ -288,8 +287,8 @@ public class TextStyle {
     /**
      * Checks for whether text where this style is obfuscated.
      *
-     * @return The value for the obfuscated property,
-     *      or {@link Optional#absent()}
+     * @return The value for the obfuscated property, or
+     *         {@link Optional#absent()}
      */
     public Optional<Boolean> isObfuscated() {
         return this.obfuscated;
@@ -299,20 +298,18 @@ public class TextStyle {
      * Returns whether the given {@link TextStyle} is contained in this
      * {@link TextStyle}.
      *
-     * <p>
-     * For example, a {@link TextStyle} with {@code {bold: true, italic: true}} would return
-     * true for <code>contains({@link TextStyles#BOLD})</code> and
-     * <code>contains({@link TextStyles#ITALIC}).</code>
-     * </p>
+     * <p>For example, a {@link TextStyle} with {@code bold: true, italic:
+     * true}} would return {@code true} for <code>contains(
+     * {@link TextStyles#BOLD})</code> and <code>contains(
+     * {@link TextStyles#ITALIC}).</code></p>
      *
-     * <p>
-     * If the specified {@link TextStyle} is a composite of multiple styles it
-     * returns true if this style has at least all of the properties set in the
-     * specified style.
-     * </p>
+     * <p>If the specified {@link TextStyle} is a composite of multiple styles
+     * it returns {@code true} if this style has at least all of the properties
+     * set in the specified style.</p>
      *
      * @param styles The text styles to check
-     * @return True if the given text styles are contained in this text style
+     * @return {@code true} if the given text styles are contained in this text
+     *         style
      */
     public boolean contains(TextStyle... styles) {
         for (TextStyle style : checkNotNull(styles, "styles")) {
@@ -370,8 +367,8 @@ public class TextStyle {
     }
 
     /**
-     * Utility method to compose the current TextStyle with the given styles, with optional
-     * negation.
+     * Utility method to compose the current TextStyle with the given styles,
+     * with optional negation.
      *
      * @param styles The styles to compose with
      * @param negate Whether or not to negate the passed-in styles
@@ -422,7 +419,8 @@ public class TextStyle {
     }
 
     /**
-     * Utility method to check if the given "super-property" contains the given "sub-property".
+     * Utility method to check if the given "super-property" contains the given
+     * "sub-property".
      *
      * @param superprop The super property
      * @param subprop The sub property
@@ -466,28 +464,32 @@ public class TextStyle {
     }
 
     /**
-     * A Base text style is a text style that is represented in Minecraft.
-     * There  are several Base styles specified in
-     * {@link TextStyles} which are the
-     * Minecraft base types. Base extends FormattingCode because it does have a
-     * corresponding formatting code; it is a single, pure text style.
+     * Represents a {@link TextStyle} that is not a composite, for example
+     * {@link TextStyles#BOLD}. It is a base text style in Minecraft with a name
+     * and a legacy formatting code.
+     *
+     * @see TextStyle
+     * @see Base
      */
     public abstract static class Base extends TextStyle implements BaseFormatting {
 
         /**
-         * Constructs a new Base TextStyle.
+         * Constructs a new {@link Base}.
          *
          * @param bold Whether text where this style is applied is bolded
          * @param italic Whether text where this style is applied is italicized
-         * @param underline Whether text where this style is applied is underlined
-         * @param obfuscated Whether text where this style is applied is obfuscated
-         * @param strikethrough Whether text where this style is applied has a strikethrough
+         * @param underline Whether text where this style is applied is
+         *        underlined
+         * @param obfuscated Whether text where this style is applied is
+         *        obfuscated
+         * @param strikethrough Whether text where this style is applied has a
+         *        strikethrough
          */
         protected Base(@Nullable Boolean bold,
-                  @Nullable Boolean italic,
-                  @Nullable Boolean underline,
-                  @Nullable Boolean strikethrough,
-                  @Nullable Boolean obfuscated) {
+                @Nullable Boolean italic,
+                @Nullable Boolean underline,
+                @Nullable Boolean strikethrough,
+                @Nullable Boolean obfuscated) {
             super(
                     bold,
                     italic,
