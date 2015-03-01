@@ -24,7 +24,10 @@
  */
 package org.spongepowered.api.world.extent;
 
+import com.flowpowered.math.vector.Vector3d;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.data.TileEntity;
 
 import java.util.Collection;
@@ -62,11 +65,37 @@ public interface TileVolume extends BlockVolume {
     Collection<TileEntity> getTileEntities(Predicate<TileEntity> filter);
 
     /**
-     * Spawns a tile entity using the already set properties (extent, position, rotation).
+     * Gets the tile entity at the given position, if it exists.
+     *
+     * @param position The position
+     * @return The tile entity, or {@link Optional#absent()}
+     */
+    Optional<TileEntity> getTileEntity(Vector3d position);
+
+    /**
+     * Get the tile entity at the given position, if it exists.
+     *
+     * @param x The X position
+     * @param y The Y position
+     * @param z The Z position
+     * @return The tile entity, or {@link Optional#absent()}
+     */
+    Optional<TileEntity> getTileEntity(int x, int y, int z);
+
+    /**
+     * Get the tile entity at the block in the given location, if it exists.
+     *
+     * @param blockLoc The block position
+     * @return The tile entity, or {@link Optional#absent()}
+     */
+    Optional<TileEntity> getTileEntity(BlockLoc blockLoc);
+
+    /**
+     * Adds a tile entity using the already set properties (extent, position, block data).
      *
      * @param tileEntity The tile entity to spawn
      * @return True if successful, false otherwise
      */
-    boolean spawnTileEntity(TileEntity tileEntity);
+    boolean addTileEntity(TileEntity tileEntity);
 
 }
