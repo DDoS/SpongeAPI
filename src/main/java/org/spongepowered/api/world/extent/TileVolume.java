@@ -47,7 +47,7 @@ public interface TileVolume extends BlockVolume {
      *
      * @return A collection of entities
      */
-    Collection<Tile> getTileEntities();
+    Collection<Tile> getTiles();
 
     /**
      * Return a collection of tile entities contained within this volume,
@@ -62,7 +62,7 @@ public interface TileVolume extends BlockVolume {
      * @param filter The filter to apply to the returned entities
      * @return A collection of filtered entities
      */
-    Collection<Tile> getTileEntities(Predicate<Tile> filter);
+    Collection<Tile> getTiles(Predicate<Tile> filter);
 
     /**
      * Gets the tile entity at the given position, if it exists.
@@ -70,7 +70,7 @@ public interface TileVolume extends BlockVolume {
      * @param position The position
      * @return The tile entity, or {@link Optional#absent()}
      */
-    Optional<Tile> getTileEntity(Vector3d position);
+    Optional<Tile> getTile(Vector3d position);
 
     /**
      * Get the tile entity at the given position, if it exists.
@@ -80,7 +80,7 @@ public interface TileVolume extends BlockVolume {
      * @param z The Z position
      * @return The tile entity, or {@link Optional#absent()}
      */
-    Optional<Tile> getTileEntity(int x, int y, int z);
+    Optional<Tile> getTile(int x, int y, int z);
 
     /**
      * Get the tile entity at the block in the given location, if it exists.
@@ -88,6 +88,6 @@ public interface TileVolume extends BlockVolume {
      * @param blockLoc The block position
      * @return The tile entity, or {@link Optional#absent()}
      */
-    Optional<Tile> getTileEntity(BlockLoc blockLoc);
+    Optional<Tile> getTile(BlockLoc blockLoc);
 
 }
