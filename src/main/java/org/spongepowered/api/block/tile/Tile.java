@@ -49,9 +49,23 @@ public interface Tile extends DataSerializable {
     BlockLoc getBlock();
 
     /**
-     * Marks this tile entity to reset its data in the very near future, preferably
-     * within one game tick.
+     * Changes the validation of this tile.
+     *
+     * <p>If the tile entity is invalid, no processing will be done on the tile entity
+     * until it either becomes valid or is reset on the next tick.</p>
+     *
+     * <p>If the tile entity is valid, then processing can continue and the tile entity
+     * will not be reset on the next tick.</p>
+     *
+     * @param valid True if the tile should be validated, or false if it should be invalidated
      */
-    void reset();
+    void setValid(boolean valid);
+
+    /**
+     * Checks for whether the tile is currently valid or not.
+     *
+     * @return True if the tile is valid, false if
+     */
+    boolean isValid();
 
 }
