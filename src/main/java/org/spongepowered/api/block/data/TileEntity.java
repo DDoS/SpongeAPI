@@ -48,4 +48,10 @@ public interface TileEntity extends DataSerializable {
      */
     BlockLoc getBlock();
 
+    /**
+     * Marks this tile entity for removal in the very near future, preferably
+     * within one game tick.
+     */
+    void remove();
+
 }
