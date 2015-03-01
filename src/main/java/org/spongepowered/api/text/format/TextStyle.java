@@ -475,7 +475,7 @@ public class TextStyle {
          * @param obfuscated Whether text where this style is applied is obfuscated
          * @param strikethrough Whether text where this style is applied has a strikethrough
          */
-        Base(@Nullable Boolean bold,
+        public Base(@Nullable Boolean bold,
                   @Nullable Boolean italic,
                   @Nullable Boolean underline,
                   @Nullable Boolean strikethrough,
