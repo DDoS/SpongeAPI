@@ -90,12 +90,4 @@ public interface TileVolume extends BlockVolume {
      */
     Optional<TileEntity> getTileEntity(BlockLoc blockLoc);
 
-    /**
-     * Adds a tile entity using the already set properties (extent, position, block data).
-     *
-     * @param tileEntity The tile entity to spawn
-     * @return True if successful, false otherwise
-     */
-    boolean addTileEntity(TileEntity tileEntity);
-
 }
