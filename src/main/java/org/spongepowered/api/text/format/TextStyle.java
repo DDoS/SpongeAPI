@@ -91,7 +91,7 @@ public class TextStyle {
      * @param obfuscated Whether text where this style is applied is obfuscated
      * @param strikethrough Whether text where this style is applied has a strikethrough
      */
-    TextStyle(@Nullable Boolean bold,
+    public TextStyle(@Nullable Boolean bold,
               @Nullable Boolean italic,
               @Nullable Boolean underline,
               @Nullable Boolean strikethrough,
@@ -114,7 +114,7 @@ public class TextStyle {
      * @param obfuscated Whether text where this style is applied is obfuscated
      * @param strikethrough Whether text where this style is applied has a strikethrough
      */
-    protected TextStyle(Optional<Boolean> bold,
+    private TextStyle(Optional<Boolean> bold,
                         Optional<Boolean> italic,
                         Optional<Boolean> underline,
                         Optional<Boolean> strikethrough,
@@ -475,7 +475,7 @@ public class TextStyle {
          * @param obfuscated Whether text where this style is applied is obfuscated
          * @param strikethrough Whether text where this style is applied has a strikethrough
          */
-        public Base(@Nullable Boolean bold,
+        protected Base(@Nullable Boolean bold,
                   @Nullable Boolean italic,
                   @Nullable Boolean underline,
                   @Nullable Boolean strikethrough,
