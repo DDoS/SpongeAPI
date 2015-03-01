@@ -352,12 +352,12 @@ public final class Texts {
                 return texts[0];
             default:
                 TextBuilder builder = builder();
-                boolean first = true;
+                boolean appendSeparator = false;
                 for (Text text : texts) {
-                    if (!first) {
+                    if (appendSeparator) {
                         builder.append(separator);
                     } else {
-                        first = false;
+                        appendSeparator = true;
                     }
 
                     builder.append(text);

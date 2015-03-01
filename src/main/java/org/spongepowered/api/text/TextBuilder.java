@@ -30,7 +30,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.spongepowered.api.text.action.ClickAction;
 import org.spongepowered.api.text.action.HoverAction;
@@ -41,7 +40,6 @@ import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.translation.Translation;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -126,7 +124,7 @@ public abstract class TextBuilder {
      */
     // TODO: Make sure this is the correct behaviour
     public TextBuilder style(TextStyle... styles) {
-        this.style = this.style.and(checkNotNull(styles, "styles"));
+        this.style = this.style.and(styles);
         return this;
     }
 
@@ -221,7 +219,10 @@ public abstract class TextBuilder {
      * @see Text#getChildren()
      */
     public TextBuilder append(Text... children) {
-        Collections.addAll(this.children, checkNotNull(children, "children"));
+        for (Text child : checkNotNull(children, "children")) {
+            checkNotNull(child, "child");
+            this.children.add(child);
+        }
         return this;
     }
 
@@ -233,12 +234,10 @@ public abstract class TextBuilder {
      * @see Text#getChildren()
      */
     public TextBuilder append(Iterable<? extends Text> children) {
-        Iterables.addAll(this.children, checkNotNull(children, "children"));
+        for (Text child : checkNotNull(children, "children")) {
+            this.children.add(checkNotNull(child, "child"));
+        }
         return this;
-    }
-
-    private static <T> Collection<T> asCollection(Iterable<T> iterable) {
-        return (Collection<T>) iterable;
     }
 
     /**
@@ -252,7 +251,7 @@ public abstract class TextBuilder {
      */
     public TextBuilder insert(int pos, Text... children) {
         for (Text child : checkNotNull(children, "children")) {
-            this.children.add(pos++, child);
+            this.children.add(pos++, checkNotNull(child, "child"));
         }
         return this;
     }
@@ -267,13 +266,8 @@ public abstract class TextBuilder {
      * @see Text#getChildren()
      */
     public TextBuilder insert(int pos, Iterable<? extends Text> children) {
-        checkNotNull(children, "children");
-        if (children instanceof Collection) {
-            this.children.addAll(pos, asCollection(children));
-        } else {
-            for (Text child : children) {
-                this.children.add(pos++, child);
-            }
+        for (Text child : checkNotNull(children, "children")) {
+            this.children.add(pos++, checkNotNull(child, "child"));
         }
         return this;
     }
@@ -287,7 +281,7 @@ public abstract class TextBuilder {
      */
     public TextBuilder remove(Text... children) {
         for (Text child : checkNotNull(children, "children")) {
-            this.children.remove(child);
+            this.children.remove(checkNotNull(child));
         }
         return this;
     }
@@ -300,13 +294,8 @@ public abstract class TextBuilder {
      * @see Text#getChildren()
      */
     public TextBuilder remove(Iterable<? extends Text> children) {
-        checkNotNull(children, "children");
-        if (children instanceof Collection) {
-            this.children.removeAll(asCollection(children));
-        } else {
-            for (Text child : children) {
-                this.children.remove(child);
-            }
+        for (Text child : checkNotNull(children, "children")) {
+            this.children.remove(checkNotNull(child));
         }
         return this;
     }
