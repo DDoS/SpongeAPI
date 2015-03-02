@@ -133,7 +133,7 @@ public final class Texts {
      * @param objects The object array
      * @return The built text object
      */
-    public static Text of(Object... objects) throws IllegalArgumentException {
+    public static Text of(Object... objects) {
         TextBuilder builder = builder();
         TextColor color = TextColors.NONE;
         TextStyle style = TextStyles.NONE;

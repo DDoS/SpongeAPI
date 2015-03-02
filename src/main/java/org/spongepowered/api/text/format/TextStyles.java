@@ -48,6 +48,11 @@ public final class TextStyles {
      */
     public static final TextStyle.Base RESET = null;
 
+    /**
+     * Returns an empty {@link TextStyle}.
+     *
+     * @return An empty text style
+     */
     public static TextStyle of() {
         return NONE;
     }
