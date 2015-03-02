@@ -22,24 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package org.spongepowered.api.event.block;
-
-import org.spongepowered.api.block.BlockLoc;
-
-import java.util.Collection;
+package org.spongepowered.api.world.difficulty;
 
 /**
- * Called when a block update is about to occur, which is often when a block
- * has triggered an "update" for its neighbors.
+ * Represents a possible difficulty setting.
+ *
+ * @see Difficulties
  */
-public interface BlockUpdateEvent extends BlockEvent {
-
-    /**
-     * Gets a collection of blocks that are being affected by the update.
-     *
-     * @return A collection of affected blocks
-     */
-    Collection<BlockLoc> getAffectedBlocks();
-
+public interface Difficulty {
 }

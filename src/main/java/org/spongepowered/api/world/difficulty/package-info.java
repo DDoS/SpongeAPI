@@ -23,23 +23,4 @@
  * THE SOFTWARE.
  */
 
-package org.spongepowered.api.event.block;
-
-import org.spongepowered.api.block.BlockLoc;
-
-import java.util.Collection;
-
-/**
- * Called when a block update is about to occur, which is often when a block
- * has triggered an "update" for its neighbors.
- */
-public interface BlockUpdateEvent extends BlockEvent {
-
-    /**
-     * Gets a collection of blocks that are being affected by the update.
-     *
-     * @return A collection of affected blocks
-     */
-    Collection<BlockLoc> getAffectedBlocks();
-
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.api.world.difficulty;
