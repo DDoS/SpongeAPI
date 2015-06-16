@@ -104,10 +104,10 @@ public class BlockRay implements Iterator<Location> {
         // Figure out the direction of the ray for each axis
         if (this.direction.getX() >= 0) {
             this.xPlaneIncrement = 1;
-            this.xFace = Direction.SOUTH;
+            this.xFace = Direction.EAST;
         } else {
             this.xPlaneIncrement = -1;
-            this.xFace = Direction.NORTH;
+            this.xFace = Direction.WEST;
         }
         if (this.direction.getY() >= 0) {
             this.yPlaneIncrement = 1;
@@ -118,10 +118,10 @@ public class BlockRay implements Iterator<Location> {
         }
         if (this.direction.getZ() >= 0) {
             this.zPlaneIncrement = 1;
-            this.zFace = Direction.EAST;
+            this.zFace = Direction.SOUTH;
         } else {
             this.zPlaneIncrement = -1;
-            this.zFace = Direction.WEST;
+            this.zFace = Direction.NORTH;
         }
 
         reset();
