@@ -25,12 +25,10 @@
 package org.spongepowered.api.util.blockray;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.extent.Extent;
 
 /**
  * Represents a filter that determines at what location a {@link BlockRay} should stop. This filter
@@ -47,24 +45,20 @@ import org.spongepowered.api.world.extent.Extent;
  * at based on some metric, like transparency, block model, or even distance. The standard
  * Bukkit-like behavior for finding the target block can be achieved with using
  * {@link BlockRayFilter#ONLY_AIR}, optionally combined with
- * {@link BlockRayFilter#maxDistance(int)} to limit the target block to be within some
+ * {@link BlockRayFilter#maxDistance(double)} to limit the target block to be within some
  * distance.</p>
  *
  * <p>A {@link BlockRayFilter} is modeled as a predicate taking three doubles and a block face,
- * (in the {@link #shouldContinue(double, double, double, Direction)} method) instead of using a
+ * (in the {@link #shouldContinue(BlockRayHit)} method) instead of using a
  * regular {@link com.google.common.base.Predicate} taking a tuple. This is to save object
  * creation, which can become very expensive if an individual ray cast goes through hundreds or
  * thousands of locations.</p>
- *
- * <p>Many {@link BlockRayFilter}s are not concerned with the individual positions within a block.
- * For convenience, a {@link DiscreteBlockRayFilter} class is provided that wraps
- * {@link BlockRayFilter}s that only care about discrete block locations.</p>
  */
 public abstract class BlockRayFilter {
 
     /**
      * Called at the beginning of a ray cast. An instance should perform any setup required
-     * in this method.
+     * in this method. The default implementation does nothing
      *
      * <p>This method can only be called once on any one {@link BlockRayFilter} instance, and is
      * called at the beginning of a ray cast.</p>
@@ -72,7 +66,8 @@ public abstract class BlockRayFilter {
      * @param location The starting location of the ray cast
      * @param direction The direction of the ray cast
      */
-    public abstract void start(Location location, Vector3d direction);
+    public void start(Location location, Vector3d direction) {
+    }
 
     /**
      * Called along each step of a ray cast to determine whether the ray cast should continue. A
@@ -80,24 +75,15 @@ public abstract class BlockRayFilter {
      * value of {@code false} indicates that the ray cast should stop at the current block
      * location.
      *
-     * <p>Due to the specifics of the ray casting algorithm, at least one of the given x, y, and z
-     * coordinates on a specific invocation of this method will be a round, integer number. The
-     * coordinate that is an integer is the axis of the block face that was passed through when the
-     * ray entered, but this isn't enough information to determine the specific block face that was
-     * passed through. For that reason, a {@link Direction} is provided, or the normal vector of
-     * the block face that was passed through. This vector is 0 for the first block.</p>
+     * <p>This method provides the instance of the last block hit, which contains information
+     * about the exact intersection coordinates, the block face hit and the affected block.
+     * If no blocks have been hit yet, this will be the starting position with face of {@link Direction#NONE}.</p>
      *
-     * <p>The fractional parts of the two coordinates that are still floating points represent the
-     * position along the block face where the ray cast entered the block. This is useful for more
-     * granular collision checking with the ray, like with block models.</p>
-     *
-     * @param x The x coordinate of the location
-     * @param y The y coordinate of the location
-     * @param z The z coordinate of the location
-     * @param blockFace The normal vector of the block face that was passed through
+     * @param lastHit The last block hit
      * @return True to continue ray casting, false to stop
+     * @see BlockRayHit
      */
-    public abstract boolean shouldContinue(double x, double y, double z, Direction blockFace);
+    public abstract boolean shouldContinue(BlockRayHit lastHit);
 
     /**
      * Composes this instance with the given {@link BlockRayFilter}, and returns an instance which
@@ -112,6 +98,7 @@ public abstract class BlockRayFilter {
         final BlockRayFilter self = this;
 
         return new BlockRayFilter() {
+
             @Override
             public void start(Location location, Vector3d direction) {
                 self.start(location, direction);
@@ -119,8 +106,8 @@ public abstract class BlockRayFilter {
             }
 
             @Override
-            public boolean shouldContinue(double x, double y, double z, Direction blockFace) {
-                return self.shouldContinue(x, y, z, blockFace) && that.shouldContinue(x, y, z, blockFace);
+            public boolean shouldContinue(BlockRayHit lastHit) {
+                return self.shouldContinue(lastHit) && that.shouldContinue(lastHit);
             }
         };
     }
@@ -138,6 +125,7 @@ public abstract class BlockRayFilter {
         final BlockRayFilter self = this;
 
         return new BlockRayFilter() {
+
             @Override
             public void start(Location location, Vector3d direction) {
                 self.start(location, direction);
@@ -145,15 +133,15 @@ public abstract class BlockRayFilter {
             }
 
             @Override
-            public boolean shouldContinue(double x, double y, double z, Direction blockFace) {
-                return self.shouldContinue(x, y, z, blockFace) || that.shouldContinue(x, y, z, blockFace);
+            public boolean shouldContinue(BlockRayHit lastHit) {
+                return self.shouldContinue(lastHit) || that.shouldContinue(lastHit);
             }
         };
     }
 
     /**
      * Inverts this instance with the given {@link BlockRayFilter}, and returns an instance which
-     * first continues only when {@link BlockRayFilter#shouldContinue(double, double, double, Direction)}
+     * first continues only when {@link BlockRayFilter#shouldContinue(BlockRayHit)}
      * returns false. This is essentially a NOT operation on the check.
      *
      * @return The inverted {@link BlockRayFilter}
@@ -163,66 +151,17 @@ public abstract class BlockRayFilter {
         final BlockRayFilter self = this;
 
         return new BlockRayFilter() {
+
             @Override
             public void start(Location location, Vector3d direction) {
                 self.start(location, direction);
             }
 
             @Override
-            public boolean shouldContinue(double x, double y, double z, Direction blockFace) {
-                return !self.shouldContinue(x, y, z, blockFace);
+            public boolean shouldContinue(BlockRayHit lastHit) {
+                return !self.shouldContinue(lastHit);
             }
         };
-    }
-
-    /**
-     * Represents a {@link BlockRayFilter} that has no concerns for coordinates within a block,
-     * only with block coordinates themselves. This class wraps the
-     * {@link #shouldContinue(double, double, double, Direction)} method from
-     * {@link BlockRayFilter} with {@link #shouldContinue(Extent, int, int, int, Direction)}, which
-     * takes integers instead of doubles and provides an additional {@link Extent} reference.
-     *
-     * <p>Many {@link BlockRayFilter}s, like {@link #ONLY_AIR} or {@link #maxDistance(int)}, do
-     * not operate on the coordinates within a block, incurring unnecessary overhead. Instead, they
-     * extend the {@link DiscreteBlockRayFilter} class to limit their continue checks to integer
-     * coordinates.</p>
-     */
-    public static abstract class DiscreteBlockRayFilter extends BlockRayFilter {
-
-        /**
-         * The extent in which the block ray is being casted. Stored for convenience.
-         */
-        private Extent extent;
-
-        @Override
-        public void start(Location location, Vector3d direction) {
-            this.extent = location.getExtent();
-        }
-
-        /**
-         * Called along each step of a ray cast to determine whether the ray cast should continue.
-         * A result value of {@code true} indicates that the ray cast should keep going, while a
-         * result value of {@code false} indicates that the ray cast should stop at the current
-         * block location.
-         *
-         * <p>The integer coordinates of the location in a specific call are provided, along with
-         * a {@link Direction} representing the normal of the face that was passed through for the
-         * current block check.</p>
-         *
-         * @param extent The extent containing the location
-         * @param x The x coordinate of the location
-         * @param y The y coordinate of the location
-         * @param z The z coordinate of the location
-         * @param blockFace The normal vector of the block face that was passed through
-         * @return True to continue ray casting, false to stop
-         */
-        public abstract boolean shouldContinue(Extent extent, int x, int y, int z, Direction blockFace);
-
-        @Override
-        public boolean shouldContinue(double x, double y, double z, Direction blockFace) {
-            return shouldContinue(this.extent, (int) x, (int) y, (int) z, blockFace);
-        }
-
     }
 
     /**
@@ -237,10 +176,10 @@ public abstract class BlockRayFilter {
      * A filter that accepts all blocks. A {@link BlockRay} combined with no other filter than this
      * one could run endlessly.
      */
-    public static final BlockRayFilter ALL = new DiscreteBlockRayFilter() {
+    public static final BlockRayFilter ALL = new BlockRayFilter() {
 
         @Override
-        public boolean shouldContinue(Extent extent, int x, int y, int z, Direction blockFace) {
+        public boolean shouldContinue(BlockRayHit lastHit) {
             return true;
         }
 
@@ -250,10 +189,10 @@ public abstract class BlockRayFilter {
      * A filter that accepts no blocks. A {@link BlockRay} that uses this filter would terminate
      * immediately.
      */
-    public static final BlockRayFilter NONE = new DiscreteBlockRayFilter() {
+    public static final BlockRayFilter NONE = new BlockRayFilter() {
 
         @Override
-        public boolean shouldContinue(Extent extent, int x, int y, int z, Direction blockFace) {
+        public boolean shouldContinue(BlockRayHit lastHit) {
             return false;
         }
 
@@ -267,11 +206,11 @@ public abstract class BlockRayFilter {
      */
     public static BlockRayFilter blockType(final BlockType type) {
 
-        return new DiscreteBlockRayFilter() {
+        return new BlockRayFilter() {
 
             @Override
-            public boolean shouldContinue(Extent extent, int x, int y, int z, Direction blockFace) {
-                return extent.getBlockType(x, y, z).equals(type);
+            public boolean shouldContinue(BlockRayHit lastHit) {
+                return lastHit.getExtent().getBlockType(lastHit.getBlockPosition()).equals(type);
             }
 
         };
@@ -279,8 +218,7 @@ public abstract class BlockRayFilter {
     }
 
     /**
-     * A filter that stops at a certain integer distance. Since this filter does not care about
-     * sub-block coordinates, the distances only need to be integers.
+     * A filter that stops at a certain integer distance.
      *
      * <p>Note the behavior of a {@link BlockRay} under this filter: ray casting stops once the
      * distance is greater than the given distance, meaning that the ending location can at a
@@ -290,29 +228,29 @@ public abstract class BlockRayFilter {
      * @param distance The maximum distance allowed
      * @return The filter instance
      */
-    public static BlockRayFilter maxDistance(int distance) {
+    public static BlockRayFilter maxDistance(double distance) {
 
-        final int distanceSquared = distance * distance;
+        final double distanceSquared = distance * distance;
 
-        return new DiscreteBlockRayFilter() {
+        return new BlockRayFilter() {
 
-            private int startX;
-            private int startY;
-            private int startZ;
+            private double startX;
+            private double startY;
+            private double startZ;
 
             @Override
             public void start(Location location, Vector3d direction) {
-                Vector3i position = location.getBlockPosition();
+                final Vector3d position = location.getPosition();
                 this.startX = position.getX();
                 this.startY = position.getY();
                 this.startZ = position.getZ();
             }
 
             @Override
-            public boolean shouldContinue(Extent extent, int x, int y, int z, Direction blockFace) {
-                final int deltaX = x - this.startX;
-                final int deltaY = y - this.startY;
-                final int deltaZ = z - this.startZ;
+            public boolean shouldContinue(BlockRayHit lastHit) {
+                final double deltaX = lastHit.getX() - this.startX;
+                final double deltaY = lastHit.getY() - this.startY;
+                final double deltaZ = lastHit.getZ() - this.startZ;
                 return (deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) < distanceSquared;
             }
         };

@@ -30,6 +30,7 @@ import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Preconditions;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.command.CommandSource;
@@ -39,13 +40,17 @@ import org.spongepowered.api.world.extent.Extent;
 import java.util.Iterator;
 
 /**
- * A block ray which traces a line and returns all blocks intersected in order,
+ * A block ray which traces a line and returns all block boundaries intersected in order,
  * starting from the start location. A {@link BlockRayFilter} is used as a predicate
  * to know when the trace should be ended. This class implements the {@link Iterator}
  * interface with the exception of {@link Iterator#remove()}.
+ *
+ * @see BlockRayHit
+ * @see BlockRayFilter
  */
-public class BlockRay implements Iterator<Location> {
+public class BlockRay implements Iterator<BlockRayHit> {
 
+    private static final int DEFAULT_BLOCK_LIMIT = 1000;
     // Ending test predicate
     private final BlockRayFilter filter;
     // Extent to iterate in
@@ -66,10 +71,15 @@ public class BlockRay implements Iterator<Location> {
     private int xPlaneNext, yPlaneNext, zPlaneNext;
     // The solutions for the nearest plane intersections
     private double xPlaneT, yPlaneT, zPlaneT;
+    // Limits to help prevent infinite iteration
+    private int blockLimit = DEFAULT_BLOCK_LIMIT, blockCount;
+    // Last block hit
+    private BlockRayHit lastHit;
 
     /**
      * Constructs a BlockRay that traces from a starting location to an ending one.
-     * This ray ends when it either reaches the location of the filter returns false.
+     * This ray ends when it either reaches the location, the filter returns false
+     * or the optional block limit has been reached.
      *
      * @param filter The filter condition for ending the trace
      * @param from The starting point
@@ -84,7 +94,7 @@ public class BlockRay implements Iterator<Location> {
 
     /**
      * Constructs a BlockRay that traces in a given direction starting from a point.
-     * This ray ends when the filter returns false.
+     * This ray ends when the filter returns false or the optional block limit has been reached.
      *
      * @param filter The filter condition for ending the trace
      * @param start The starting point
@@ -128,7 +138,18 @@ public class BlockRay implements Iterator<Location> {
     }
 
     /**
-     * Resets the iterator; it will iterate from the start location again.
+     * Sets the maximum number of blocks to intersect before stopping.
+     * This is a safeguard to prevent infinite iteration.
+     * Default value is 1000. Use a negative value to disable this.
+     *
+     * @param blockLimit The block limit
+     */
+    public void setBlockLimit(int blockLimit) {
+        this.blockLimit = blockLimit;
+    }
+
+    /**
+     * Resets the iterator; it will iterate from the starting location again.
      */
     public final void reset() {
         // Start at the position
@@ -136,29 +157,45 @@ public class BlockRay implements Iterator<Location> {
         this.yCurrent = this.position.getY();
         this.zCurrent = this.position.getZ();
 
-        // First plane is the block that contains the coordinate,
-        // compute the intersection solution for the next plane
-        this.xPlaneNext = GenericMath.floor(this.xCurrent) + this.xPlaneIncrement;
-        this.xPlaneT = (this.xPlaneNext - this.position.getX()) / this.direction.getX();
-
+        // First planes are for the block that contains the coordinates
+        this.xPlaneNext = GenericMath.floor(this.xCurrent);
         // noinspection SuspiciousNameCombination
-        this.yPlaneNext = GenericMath.floor(this.yCurrent) + this.yPlaneIncrement;
-        this.yPlaneT = (this.yPlaneNext - this.position.getY()) / this.direction.getY();
+        this.yPlaneNext = GenericMath.floor(this.yCurrent);
+        this.zPlaneNext = GenericMath.floor(this.zCurrent);
 
-        this.zPlaneNext = GenericMath.floor(this.zCurrent) + this.zPlaneIncrement;
+        // Correct the next planes for the direction
+        if (direction.getX() >= 0) {
+            this.xPlaneNext++;
+        }
+        if (direction.getY() >= 0) {
+            this.yPlaneNext++;
+        }
+        if (direction.getZ() >= 0) {
+            this.zPlaneNext++;
+        }
+
+        // Compute the first intersection solutions for each plane
+        this.xPlaneT = (this.xPlaneNext - this.position.getX()) / this.direction.getX();
+        this.yPlaneT = (this.yPlaneNext - this.position.getY()) / this.direction.getY();
         this.zPlaneT = (this.zPlaneNext - this.position.getZ()) / this.direction.getZ();
 
         // We start in the block, no plane has been entered yet
         this.faceCurrent = Direction.NONE;
+
+        // Reset the block count
+        this.blockCount = 0;
+
+        // Last hit is the starting block
+        this.lastHit = new BlockRayHit(this.extent, this.xCurrent, this.yCurrent, this.zCurrent, this.faceCurrent);
     }
 
     @Override
     public boolean hasNext() {
-        return this.filter.shouldContinue(this.xCurrent, this.yCurrent, this.zCurrent, this.faceCurrent);
+        return (this.blockLimit < 0 || this.blockCount < this.blockLimit) && this.filter.shouldContinue(this.lastHit);
     }
 
     @Override
-    public Location next() {
+    public BlockRayHit next() {
         /*
             The ray can be modeled using the following parametric equations:
                 x = d_x * t + p_x
@@ -186,6 +223,8 @@ public class BlockRay implements Iterator<Location> {
 
             The iterator solves these equations and provides the solutions in increasing order with respect to t_s.
         */
+
+        // TODO: equality cases
 
         if (this.xPlaneT < this.yPlaneT) {
             if (this.xPlaneT < this.zPlaneT) {
@@ -227,7 +266,9 @@ public class BlockRay implements Iterator<Location> {
             this.zPlaneT = (this.zPlaneNext - this.position.getZ()) / this.direction.getZ();
         }
 
-        return new Location(this.extent, this.xCurrent, this.yCurrent, this.zCurrent);
+        this.blockCount++;
+
+        return this.lastHit = new BlockRayHit(this.extent, this.xCurrent, this.yCurrent, this.zCurrent, this.faceCurrent);
     }
 
     @Override
@@ -235,25 +276,25 @@ public class BlockRay implements Iterator<Location> {
         throw new UnsupportedOperationException("Removal is not supported by this iterator");
     }
 
-    // TODO: remove me when done
+    // TODO: remove me once done
     public static void test(CommandSource source) {
         final Player player = (Player) source;
-        final Vector3d rotation = player.getRotation();
-        for (Location location : from(player.getLocation()).direction(Quaterniond.fromAxesAnglesDeg(rotation.getY(), rotation.getX(), rotation.getZ())
-            .getDirection())) {
-            if (!location.hasBlock()) {
+        for (BlockRayHit hit : from(player).blockLimit(40)) {
+            if (!hit.getExtent().containsBlock(hit.getBlockPosition())) {
                 break;
             }
-            System.out.println(location.getPosition());
-            location.replaceWith(BlockTypes.DIAMOND_BLOCK);
+            //noinspection ConstantConditions
+            hit.getExtent().setBlockType(hit.getBlockPosition(), BlockTypes.DIAMOND_BLOCK);
         }
     }
 
     /**
-     * Initializes a block ray build, starting with the starting location.
+     * Initializes a block ray builder, starting with the starting location.
      *
      * @param start The starting location
      * @return A new block ray builder
+     * @see #BlockRay(BlockRayFilter, Location, Location)
+     * @see #BlockRay(BlockRayFilter, Location, Vector3d)
      */
     public static BlockRayBuilder from(Location start) {
         Preconditions.checkArgument(start != null, "Start cannot be null");
@@ -261,15 +302,30 @@ public class BlockRay implements Iterator<Location> {
     }
 
     /**
+     * Initializes a block ray builder for the entity's eye.
+     * This sets both the starting point and direction.
+     *
+     * @param entity The entity
+     * @return A new block ray builder
+     */
+    public static BlockRayBuilder from(Entity entity) {
+        final Vector3d rotation = entity.getRotation();
+        final Vector3d direction = Quaterniond.fromAxesAnglesDeg(rotation.getY(), 360 - rotation.getX(), rotation.getZ()).getDirection();
+        // TODO: this needs to use the eye location
+        return from(entity.getLocation()).direction(direction);
+    }
+
+    /**
      * A builder for block ray, which also implements {@link Iterable} which makes it
      * useful for 'advanced for loops'. Use {@link #from(Location)} to get an instance.
      */
-    public static class BlockRayBuilder implements Iterable<Location> {
+    public static class BlockRayBuilder implements Iterable<BlockRayHit> {
 
         private final Location start;
         private BlockRayFilter filter = null;
         private Location end = null;
         private Vector3d direction = null;
+        private int blockLimit = DEFAULT_BLOCK_LIMIT;
 
         private BlockRayBuilder(Location start) {
             this.start = start;
@@ -317,6 +373,18 @@ public class BlockRay implements Iterator<Location> {
         }
 
         /**
+         * Sets the maximum number of blocks to intersect before stopping.
+         * This is a safeguard to prevent infinite iteration.
+         * Default value is 1000. Use a negative value to disable this.
+         *
+         * @param blockLimit The block limit
+         */
+        public BlockRayBuilder blockLimit(int blockLimit) {
+            this.blockLimit = blockLimit;
+            return this;
+        }
+
+        /**
          * Returns a block ray build from the settings. An ending location or direction needs to have been set.
          *
          * @return A block ray
@@ -324,16 +392,19 @@ public class BlockRay implements Iterator<Location> {
         public BlockRay build() {
             Preconditions.checkState(this.end != null || this.direction != null, "Either end point or direction needs to be set");
             final BlockRayFilter filter = this.filter == null ? BlockRayFilter.ALL : this.filter;
-            return this.end == null ? new BlockRay(filter, this.start, this.direction) : new BlockRay(filter, this.start, this.end);
+            final BlockRay blockRay = this.end == null ? new BlockRay(filter, this.start, this.direction)
+                : new BlockRay(filter, this.start, this.end);
+            blockRay.setBlockLimit(blockLimit);
+            return blockRay;
         }
 
         @Override
-        public Iterator<Location> iterator() {
+        public Iterator<BlockRayHit> iterator() {
             return build();
         }
     }
 
-    private static class TargetBlockFilter extends BlockRayFilter.DiscreteBlockRayFilter {
+    private static class TargetBlockFilter extends BlockRayFilter {
 
         private final Vector3i target;
 
@@ -342,8 +413,8 @@ public class BlockRay implements Iterator<Location> {
         }
 
         @Override
-        public boolean shouldContinue(Extent extent, int x, int y, int z, Direction blockFace) {
-            return this.target.getX() != x || this.target.getY() != y || this.target.getZ() != z;
+        public boolean shouldContinue(BlockRayHit lastHit) {
+            return !lastHit.getBlockPosition().equals(this.target);
         }
     }
 }
