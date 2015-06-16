@@ -85,7 +85,7 @@ public abstract class BlockRayFilter {
      * coordinate that is an integer is the axis of the block face that was passed through when the
      * ray entered, but this isn't enough information to determine the specific block face that was
      * passed through. For that reason, a {@link Direction} is provided, or the normal vector of
-     * the block face that was passed through.</p>
+     * the block face that was passed through. This vector is 0 for the first block.</p>
      *
      * <p>The fractional parts of the two coordinates that are still floating points represent the
      * position along the block face where the ray cast entered the block. This is useful for more
@@ -101,8 +101,8 @@ public abstract class BlockRayFilter {
 
     /**
      * Composes this instance with the given {@link BlockRayFilter}, and returns an instance which
-     * first checks with this instance, and then the given instance. This is essentially like doing
-     * an AND operation between the two checks.
+     * first checks with this instance, and then the given instance. This is essentially an AND
+     * operation between the two checks.
      *
      * @param that The other {@link BlockRayFilter} to compose with
      * @return The composed {@link BlockRayFilter}
@@ -121,6 +121,56 @@ public abstract class BlockRayFilter {
             @Override
             public boolean shouldContinue(double x, double y, double z, Direction blockFace) {
                 return self.shouldContinue(x, y, z, blockFace) && that.shouldContinue(x, y, z, blockFace);
+            }
+        };
+    }
+
+    /**
+     * Composes this instance with the given {@link BlockRayFilter}, and returns an instance which
+     * checks with this instance or the given instance. This is essentially an OR operation between
+     * the two checks.
+     *
+     * @param that The other {@link BlockRayFilter} to compose with
+     * @return The composed {@link BlockRayFilter}
+     */
+    public BlockRayFilter or(final BlockRayFilter that) {
+
+        final BlockRayFilter self = this;
+
+        return new BlockRayFilter() {
+            @Override
+            public void start(Location location, Vector3d direction) {
+                self.start(location, direction);
+                that.start(location, direction);
+            }
+
+            @Override
+            public boolean shouldContinue(double x, double y, double z, Direction blockFace) {
+                return self.shouldContinue(x, y, z, blockFace) || that.shouldContinue(x, y, z, blockFace);
+            }
+        };
+    }
+
+    /**
+     * Inverts this instance with the given {@link BlockRayFilter}, and returns an instance which
+     * first continues only when {@link BlockRayFilter#shouldContinue(double, double, double, Direction)}
+     * returns false. This is essentially a NOT operation on the check.
+     *
+     * @return The inverted {@link BlockRayFilter}
+     */
+    public BlockRayFilter not() {
+
+        final BlockRayFilter self = this;
+
+        return new BlockRayFilter() {
+            @Override
+            public void start(Location location, Vector3d direction) {
+                self.start(location, direction);
+            }
+
+            @Override
+            public boolean shouldContinue(double x, double y, double z, Direction blockFace) {
+                return !self.shouldContinue(x, y, z, blockFace);
             }
         };
     }
@@ -146,7 +196,7 @@ public abstract class BlockRayFilter {
 
         @Override
         public void start(Location location, Vector3d direction) {
-            extent = location.getExtent();
+            this.extent = location.getExtent();
         }
 
         /**
@@ -159,6 +209,7 @@ public abstract class BlockRayFilter {
          * a {@link Direction} representing the normal of the face that was passed through for the
          * current block check.</p>
          *
+         * @param extent The extent containing the location
          * @param x The x coordinate of the location
          * @param y The y coordinate of the location
          * @param z The z coordinate of the location
@@ -169,7 +220,7 @@ public abstract class BlockRayFilter {
 
         @Override
         public boolean shouldContinue(double x, double y, double z, Direction blockFace) {
-            return shouldContinue(extent, (int) x, (int) y, (int) z, blockFace);
+            return shouldContinue(this.extent, (int) x, (int) y, (int) z, blockFace);
         }
 
     }
@@ -183,7 +234,7 @@ public abstract class BlockRayFilter {
     public static final BlockRayFilter ONLY_AIR = blockType(BlockTypes.AIR);
 
     /**
-     * A filter that accepts no blocks. A {@link BlockRay} combined with no other filter than this
+     * A filter that accepts all blocks. A {@link BlockRay} combined with no other filter than this
      * one could run endlessly.
      */
     public static final BlockRayFilter ALL = new DiscreteBlockRayFilter() {
@@ -259,9 +310,9 @@ public abstract class BlockRayFilter {
 
             @Override
             public boolean shouldContinue(Extent extent, int x, int y, int z, Direction blockFace) {
-                int deltaX = x - startX;
-                int deltaY = y - startY;
-                int deltaZ = z - startZ;
+                final int deltaX = x - this.startX;
+                final int deltaY = y - this.startY;
+                final int deltaZ = z - this.startZ;
                 return (deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) < distanceSquared;
             }
         };
