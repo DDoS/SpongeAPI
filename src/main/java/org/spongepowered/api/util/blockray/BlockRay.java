@@ -28,11 +28,13 @@ import com.flowpowered.math.GenericMath;
 import com.flowpowered.math.imaginary.Quaterniond;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.data.manipulator.entity.EyeLocationData;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.command.CommandSource;
@@ -124,40 +126,12 @@ public class BlockRay implements Iterator<BlockRayHit> {
     // If hasNext() is called, we need to move ahead to check the next hit
     private boolean ahead = false;
 
-    /**
-     * Constructs a BlockRay that traces from a starting location to an ending one.
-     * This ray ends when it either reaches the location, the filter returns false
-     * or the optional block limit has been reached.
-     *
-     * @param filter The filter condition for ending the trace
-     * @param from The starting point
-     * @param to The end point
-     * @throws IllegalArgumentException If the extents from both points differ
-     * @throws NullPointerException is any of the arguments are null
-     */
-    public BlockRay(Predicate<BlockRayHit> filter, Location from, Location to) {
-        this(Predicates.and(filter, new TargetBlockFilter(to.getBlockPosition())), from, to.getPosition().sub(from.getPosition()));
-        Preconditions.checkArgument(from.getExtent().equals(to.getExtent()), "Cannot iterate between extents");
-    }
-
-    /**
-     * Constructs a BlockRay that traces in a given direction starting from a point.
-     * This ray ends when the filter returns false or the optional block limit has been reached.
-     *
-     * @param filter The filter condition for ending the trace
-     * @param start The starting point
-     * @param direction The direction in which to trace
-     * @throws IllegalArgumentException If direction is the zero vector
-     * @throws NullPointerException is any of the arguments are null
-     */
-    public BlockRay(Predicate<BlockRayHit> filter, Location start, Vector3d direction) {
-        Preconditions.checkArgument(direction.lengthSquared() != 0, "Direction must be a non-zero vector ('from' and 'to' cannot be the same)");
-
+    private BlockRay(Predicate<BlockRayHit> filter, Extent extent, Vector3d position, Vector3d direction) {
         this.filter = filter;
 
-        this.extent = start.getExtent();
-        this.position = start.getPosition();
-        this.direction = direction.normalize();
+        this.extent = extent;
+        this.position = position;
+        this.direction = direction;
 
         // Figure out the direction of the ray for each axis
         if (this.direction.getX() >= 0) {
@@ -320,7 +294,7 @@ public class BlockRay implements Iterator<BlockRayHit> {
     public boolean hasNext() {
         try {
             advance();
-            ahead = true;
+            this.ahead = true;
         } catch (NoSuchElementException exception) {
             return false;
         }
@@ -449,12 +423,12 @@ public class BlockRay implements Iterator<BlockRayHit> {
     // TODO: remove me once done
     public static void test(CommandSource source) {
         final Player player = (Player) source;
-        for (BlockRayHit lastHit : from(player).filter(ONLY_AIR_FILTER)) {
-            if (!lastHit.getLocation().hasBlock()) {
+        for (BlockRayHit hit : from(player).filter(ONLY_AIR_FILTER)) {
+            if (!hit.getLocation().hasBlock()) {
                 break;
             }
             //noinspection ConstantConditions
-            lastHit.getLocation().replaceWith(BlockTypes.DIAMOND_BLOCK);
+            hit.getLocation().replaceWith(BlockTypes.DIAMOND_BLOCK);
         }
     }
 
@@ -463,12 +437,23 @@ public class BlockRay implements Iterator<BlockRayHit> {
      *
      * @param start The starting location
      * @return A new block ray builder
-     * @see #BlockRay(Predicate, Location, Location)
-     * @see #BlockRay(Predicate, Location, Vector3d)
      */
     public static BlockRayBuilder from(Location start) {
         Preconditions.checkArgument(start != null, "Start cannot be null");
-        return new BlockRayBuilder(start);
+        return from(start.getExtent(), start.getPosition());
+    }
+
+    /**
+     * Initializes a block ray builder, starting with the starting location.
+     *
+     * @param extent The extent in which to trace the ray
+     * @param start The starting position
+     * @return A new block ray builder
+     */
+    public static BlockRayBuilder from(Extent extent, Vector3d start) {
+        Preconditions.checkArgument(extent != null, "Extent cannot be null");
+        Preconditions.checkArgument(start != null, "Start cannot be null");
+        return new BlockRayBuilder(extent, start);
     }
 
     /**
@@ -481,8 +466,15 @@ public class BlockRay implements Iterator<BlockRayHit> {
     public static BlockRayBuilder from(Entity entity) {
         final Vector3d rotation = entity.getRotation();
         final Vector3d direction = Quaterniond.fromAxesAnglesDeg(rotation.getY(), 360 - rotation.getX(), rotation.getZ()).getDirection();
-        // TODO: this needs to use the eye location
-        return from(entity.getLocation()).direction(direction);
+        final Location location = entity.getLocation();
+        final Vector3d position;
+        final Optional<EyeLocationData> data = entity.getData(EyeLocationData.class);
+        if (data.isPresent()) {
+            position = data.get().getEyeLocation();
+        } else {
+            position = location.getPosition();
+        }
+        return from(location.getExtent(), position).direction(direction);
     }
 
     /**
@@ -491,41 +483,47 @@ public class BlockRay implements Iterator<BlockRayHit> {
      */
     public static class BlockRayBuilder implements Iterable<BlockRayHit> {
 
-        private final Location start;
-        private Predicate<BlockRayHit> filter = null;
-        private Location end = null;
+        private final Extent extent;
+        private final Vector3d position;
+        private Predicate<BlockRayHit> filter = ALL_FILTER;
         private Vector3d direction = null;
         private int blockLimit = DEFAULT_BLOCK_LIMIT;
 
-        private BlockRayBuilder(Location start) {
-            this.start = start;
+        private BlockRayBuilder(Extent extent, Vector3d position) {
+            this.extent = extent;
+            this.position = position;
         }
 
         /**
-         * Adds a filter to the block ray. This is optional and can only be done once.
+         * Adds filters to the block ray. This is optional.
+         * Multiple filters will be ANDed together.
          *
-         * @param filter The filter to use
+         * @param filters The filters to add
          * @return This for chained calls
          */
-        public BlockRayBuilder filter(Predicate<BlockRayHit> filter) {
-            Preconditions.checkArgument(this.filter == null, "Filter has already been set");
-            Preconditions.checkArgument(filter != null, "Filter cannot be null");
-            this.filter = filter;
+        public BlockRayBuilder filter(Predicate<BlockRayHit>... filters) {
+            Preconditions.checkArgument(filters != null, "Filters cannot be null");
+            final Predicate<BlockRayHit> filter = filters.length == 1 ? filters[0] : Predicates.and(filters);
+            if (this.filter == ALL_FILTER) {
+                this.filter = filter;
+            } else {
+                this.filter = Predicates.and(this.filter, filter);
+            }
             return this;
         }
 
         /**
-         * Sets the ending location. This or setting the direction is required and can only be done once.
+         * Sets the direction and ending location. This or setting the direction is required and can only be done once.
          *
          * @param end The ending location
          * @return This for chained calls
          */
-        public BlockRayBuilder to(Location end) {
-            Preconditions.checkArgument(this.end == null, "End point has already been set");
-            Preconditions.checkArgument(this.direction == null, "End point and direction cannot be both set");
+        public BlockRayBuilder to(Vector3d end) {
+            Preconditions.checkArgument(this.direction == null, "Direction has already been set");
             Preconditions.checkArgument(end != null, "End cannot be null");
-            this.end = end;
-            return this;
+            Preconditions.checkArgument(!this.position.equals(end), "Start and end cannot be equal");
+            this.direction = end.sub(this.position).normalize();
+            return filter(new TargetBlockFilter(end));
         }
 
         /**
@@ -536,9 +534,9 @@ public class BlockRay implements Iterator<BlockRayHit> {
          */
         public BlockRayBuilder direction(Vector3d direction) {
             Preconditions.checkArgument(this.direction == null, "Direction has already been set");
-            Preconditions.checkArgument(this.end == null, "Direction and end point cannot be both set");
             Preconditions.checkArgument(direction != null, "Direction cannot be null");
-            this.direction = direction;
+            Preconditions.checkArgument(direction.lengthSquared() != 0, "Direction must be a non-zero vector");
+            this.direction = direction.normalize();
             return this;
         }
 
@@ -548,6 +546,7 @@ public class BlockRay implements Iterator<BlockRayHit> {
          * Default value is 1000. Use a negative value to disable this.
          *
          * @param blockLimit The block limit
+         * @return This for chained calls
          */
         public BlockRayBuilder blockLimit(int blockLimit) {
             this.blockLimit = blockLimit;
@@ -560,11 +559,9 @@ public class BlockRay implements Iterator<BlockRayHit> {
          * @return A block ray
          */
         public BlockRay build() {
-            Preconditions.checkState(this.end != null || this.direction != null, "Either end point or direction needs to be set");
-            final Predicate<BlockRayHit> filter = this.filter == null ? ALL_FILTER : this.filter;
-            final BlockRay blockRay = this.end == null ? new BlockRay(filter, this.start, this.direction)
-                : new BlockRay(filter, this.start, this.end);
-            blockRay.setBlockLimit(blockLimit);
+            Preconditions.checkState(this.direction != null, "Either end point or direction needs to be set");
+            final BlockRay blockRay = new BlockRay(this.filter, this.extent, this.position, this.direction);
+            blockRay.setBlockLimit(this.blockLimit);
             return blockRay;
         }
 
@@ -626,8 +623,8 @@ public class BlockRay implements Iterator<BlockRayHit> {
 
         private final Vector3i target;
 
-        private TargetBlockFilter(Vector3i target) {
-            this.target = target;
+        private TargetBlockFilter(Vector3d target) {
+            this.target = target.floor().toInt();
         }
 
         @Override
