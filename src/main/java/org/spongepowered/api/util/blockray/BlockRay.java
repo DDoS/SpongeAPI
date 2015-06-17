@@ -65,6 +65,11 @@ import java.util.NoSuchElementException;
  * {@link BlockRay#maxDistanceFilter(Vector3d, double)} to limit the target block to be within some
  * distance.</p>
  *
+ * To get the block targeted by an entity, use the following:
+ * <pre>
+ * {@code final Optional<BlockRayHit> block = BlockRay.from(entity).filter(BlockRay.ONLY_AIR_FILTER).build().end();}
+ * </pre>
+ *
  * @see BlockRayHit
  */
 public class BlockRay implements Iterator<BlockRayHit> {
@@ -124,7 +129,7 @@ public class BlockRay implements Iterator<BlockRayHit> {
     // Last block hit
     private BlockRayHit hit;
     // If hasNext() is called, we need to move ahead to check the next hit
-    private boolean ahead = false;
+    private boolean ahead;
 
     private BlockRay(Predicate<BlockRayHit> filter, Extent extent, Vector3d position, Vector3d direction) {
         this.filter = filter;
@@ -307,6 +312,19 @@ public class BlockRay implements Iterator<BlockRayHit> {
         return this.hit;
     }
 
+    /**
+     * Traces the block ray to the end and returns the last block hit,
+     * or none if the block had no rays. This advances the iterator.
+     *
+     * @return The last block of the ray, if any
+     */
+    public Optional<BlockRayHit> end() {
+        while (hasNext()) {
+            advance();
+        }
+        return Optional.fromNullable(this.hit);
+    }
+
     private void xyzIntersect() {
         this.xCurrent = this.xPlaneNext;
         this.yCurrent = this.yPlaneNext;
@@ -423,12 +441,9 @@ public class BlockRay implements Iterator<BlockRayHit> {
     // TODO: remove me once done
     public static void test(CommandSource source) {
         final Player player = (Player) source;
-        for (BlockRayHit hit : from(player).filter(ONLY_AIR_FILTER)) {
-            if (!hit.getLocation().hasBlock()) {
-                break;
-            }
-            //noinspection ConstantConditions
-            hit.getLocation().replaceWith(BlockTypes.DIAMOND_BLOCK);
+        final Optional<BlockRayHit> end = from(player).filter(ONLY_AIR_FILTER).build().end();
+        if (end.isPresent()) {
+            end.get().getLocation().replaceWith(BlockTypes.DIAMOND_BLOCK);
         }
     }
 
