@@ -32,7 +32,6 @@ import com.google.common.base.Preconditions;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.extent.Extent;
@@ -50,6 +49,12 @@ import java.util.Iterator;
  */
 public class BlockRay implements Iterator<BlockRayHit> {
 
+    private static final Vector3d X_POSITIVE = Vector3d.UNIT_X;
+    private static final Vector3d X_NEGATIVE = X_POSITIVE.negate();
+    private static final Vector3d Y_POSITIVE = Vector3d.UNIT_Y;
+    private static final Vector3d Y_NEGATIVE = Y_POSITIVE.negate();
+    private static final Vector3d Z_POSITIVE = Vector3d.UNIT_Z;
+    private static final Vector3d Z_NEGATIVE = Z_POSITIVE.negate();
     private static final int DEFAULT_BLOCK_LIMIT = 1000;
     // Ending test predicate
     private final BlockRayFilter filter;
@@ -60,13 +65,15 @@ public class BlockRay implements Iterator<BlockRayHit> {
     // Direction of the ray
     private final Vector3d direction;
     // The directions the faces are passed through
-    private final Direction xFace, yFace, zFace;
+    private final Vector3d xNormal, yNormal, zNormal;
+    // The directions the edges and corners are passed through, lazily computed
+    private Vector3d xyzNormal, xyNormal, xzNormal, yzNormal;
     // The plane increments for the direction
     private final int xPlaneIncrement, yPlaneIncrement, zPlaneIncrement;
     // The current coordinates
     private double xCurrent, yCurrent, zCurrent;
     // The current passed face
-    private Direction faceCurrent;
+    private Vector3d normalCurrent;
     // The next plane values
     private int xPlaneNext, yPlaneNext, zPlaneNext;
     // The solutions for the nearest plane intersections
@@ -114,24 +121,24 @@ public class BlockRay implements Iterator<BlockRayHit> {
         // Figure out the direction of the ray for each axis
         if (this.direction.getX() >= 0) {
             this.xPlaneIncrement = 1;
-            this.xFace = Direction.EAST;
+            this.xNormal = X_NEGATIVE;
         } else {
             this.xPlaneIncrement = -1;
-            this.xFace = Direction.WEST;
+            this.xNormal = X_POSITIVE;
         }
         if (this.direction.getY() >= 0) {
             this.yPlaneIncrement = 1;
-            this.yFace = Direction.UP;
+            this.yNormal = Y_NEGATIVE;
         } else {
             this.yPlaneIncrement = -1;
-            this.yFace = Direction.DOWN;
+            this.yNormal = Y_POSITIVE;
         }
         if (this.direction.getZ() >= 0) {
             this.zPlaneIncrement = 1;
-            this.zFace = Direction.SOUTH;
+            this.zNormal = Z_NEGATIVE;
         } else {
             this.zPlaneIncrement = -1;
-            this.zFace = Direction.NORTH;
+            this.zNormal = Z_POSITIVE;
         }
 
         reset();
@@ -163,14 +170,14 @@ public class BlockRay implements Iterator<BlockRayHit> {
         this.yPlaneNext = GenericMath.floor(this.yCurrent);
         this.zPlaneNext = GenericMath.floor(this.zCurrent);
 
-        // Correct the next planes for the direction
-        if (direction.getX() >= 0) {
+        // Correct the next planes for the direction when inside the block
+        if (this.xCurrent - this.xPlaneNext != 0 && this.direction.getX() >= 0) {
             this.xPlaneNext++;
         }
-        if (direction.getY() >= 0) {
+        if (this.yCurrent - this.yPlaneNext != 0 && this.direction.getY() >= 0) {
             this.yPlaneNext++;
         }
-        if (direction.getZ() >= 0) {
+        if (this.zCurrent - this.zPlaneNext != 0 && this.direction.getZ() >= 0) {
             this.zPlaneNext++;
         }
 
@@ -180,13 +187,13 @@ public class BlockRay implements Iterator<BlockRayHit> {
         this.zPlaneT = (this.zPlaneNext - this.position.getZ()) / this.direction.getZ();
 
         // We start in the block, no plane has been entered yet
-        this.faceCurrent = Direction.NONE;
+        this.normalCurrent = Vector3d.ZERO;
 
         // Reset the block count
         this.blockCount = 0;
 
         // Last hit is the starting block
-        this.lastHit = new BlockRayHit(this.extent, this.xCurrent, this.yCurrent, this.zCurrent, this.faceCurrent);
+        this.lastHit = new BlockRayHit(this.extent, this.xCurrent, this.yCurrent, this.zCurrent, this.direction, this.normalCurrent);
     }
 
     @Override
@@ -224,51 +231,147 @@ public class BlockRay implements Iterator<BlockRayHit> {
             The iterator solves these equations and provides the solutions in increasing order with respect to t_s.
         */
 
-        // TODO: equality cases
-
-        if (this.xPlaneT < this.yPlaneT) {
+        if (this.xPlaneT == this.yPlaneT) {
+            if (this.xPlaneT == this.zPlaneT) {
+                // xPlaneT, yPlaneT and zPlaneT are equal
+                xyzIntersect();
+            } else {
+                // xPlaneT and yPlaneT are equal
+                xyIntersect();
+            }
+        } else if (this.xPlaneT == this.zPlaneT) {
+            // xPlaneT and zPlaneT are equal
+            xzIntersect();
+        } else if (this.yPlaneT == this.zPlaneT) {
+            // yPlaneT and zPlaneT are equal
+            yzIntersect();
+        } else if (this.xPlaneT < this.yPlaneT) {
             if (this.xPlaneT < this.zPlaneT) {
                 // xPlaneT is smallest
-                this.xCurrent = this.xPlaneNext;
-                this.yCurrent = this.direction.getY() * this.xPlaneT + this.position.getY();
-                this.zCurrent = this.direction.getZ() * this.xPlaneT + this.position.getZ();
-                this.faceCurrent = xFace;
-                // Prepare next intersection
-                this.xPlaneNext += this.xPlaneIncrement;
-                this.xPlaneT = (this.xPlaneNext - this.position.getX()) / this.direction.getX();
+                xIntersect();
             } else {
                 // zPlaneT is smallest
-                this.xCurrent = this.direction.getX() * this.zPlaneT + this.position.getX();
-                this.yCurrent = this.direction.getY() * this.zPlaneT + this.position.getY();
-                this.zCurrent = this.zPlaneNext;
-                this.faceCurrent = this.zFace;
-                // Prepare next intersection
-                this.zPlaneNext += this.zPlaneIncrement;
-                this.zPlaneT = (this.zPlaneNext - this.position.getZ()) / this.direction.getZ();
+                zIntersect();
             }
         } else if (this.yPlaneT < this.zPlaneT) {
             // yPlaneT is smallest
-            this.xCurrent = this.direction.getX() * this.yPlaneT + this.position.getX();
-            this.yCurrent = this.yPlaneNext;
-            this.zCurrent = this.direction.getZ() * this.yPlaneT + this.position.getZ();
-            this.faceCurrent = this.yFace;
-            // Prepare next intersection
-            this.yPlaneNext += this.yPlaneIncrement;
-            this.yPlaneT = (this.yPlaneNext - this.position.getY()) / this.direction.getY();
+            yIntersect();
         } else {
             // zPlaneT is smallest
-            this.xCurrent = this.direction.getX() * this.zPlaneT + this.position.getX();
-            this.yCurrent = this.direction.getY() * this.zPlaneT + this.position.getY();
-            this.zCurrent = this.zPlaneNext;
-            this.faceCurrent = this.zFace;
-            // Prepare next intersection
-            this.zPlaneNext += this.zPlaneIncrement;
-            this.zPlaneT = (this.zPlaneNext - this.position.getZ()) / this.direction.getZ();
+            zIntersect();
         }
 
         this.blockCount++;
 
-        return this.lastHit = new BlockRayHit(this.extent, this.xCurrent, this.yCurrent, this.zCurrent, this.faceCurrent);
+        return this.lastHit = new BlockRayHit(this.extent, this.xCurrent, this.yCurrent, this.zCurrent, this.direction, this.normalCurrent);
+    }
+
+    private void xyzIntersect() {
+        this.xCurrent = this.xPlaneNext;
+        this.yCurrent = this.yPlaneNext;
+        this.zCurrent = this.zPlaneNext;
+        this.normalCurrent = getXYZNormal();
+        // Prepare next intersection
+        this.xPlaneNext += this.xPlaneIncrement;
+        this.yPlaneNext += this.yPlaneIncrement;
+        this.zPlaneNext += this.zPlaneIncrement;
+        this.xPlaneT = (this.xPlaneNext - this.position.getX()) / this.direction.getX();
+        this.yPlaneT = (this.yPlaneNext - this.position.getY()) / this.direction.getY();
+        this.zPlaneT = (this.zPlaneNext - this.position.getZ()) / this.direction.getZ();
+    }
+
+    private void xyIntersect() {
+        this.xCurrent = this.xPlaneNext;
+        this.yCurrent = this.yPlaneNext;
+        this.zCurrent = this.direction.getZ() * this.xPlaneT + this.position.getZ();
+        this.normalCurrent = getXYNormal();
+        // Prepare next intersection
+        this.xPlaneNext += this.xPlaneIncrement;
+        this.yPlaneNext += this.yPlaneIncrement;
+        this.xPlaneT = (this.xPlaneNext - this.position.getX()) / this.direction.getX();
+        this.yPlaneT = (this.yPlaneNext - this.position.getY()) / this.direction.getY();
+    }
+
+    private void xzIntersect() {
+        this.xCurrent = this.xPlaneNext;
+        this.yCurrent = this.direction.getY() * this.xPlaneT + this.position.getY();
+        this.zCurrent = this.zPlaneNext;
+        this.normalCurrent = getXZNormal();
+        // Prepare next intersection
+        this.xPlaneNext += this.xPlaneIncrement;
+        this.zPlaneNext += this.zPlaneIncrement;
+        this.xPlaneT = (this.xPlaneNext - this.position.getX()) / this.direction.getX();
+        this.zPlaneT = (this.zPlaneNext - this.position.getZ()) / this.direction.getZ();
+    }
+
+    private void yzIntersect() {
+        this.xCurrent = this.direction.getX() * this.yPlaneT + this.position.getX();
+        this.yCurrent = this.yPlaneNext;
+        this.zCurrent = this.zPlaneNext;
+        this.normalCurrent = getYZNormal();
+        // Prepare next intersection
+        this.yPlaneNext += this.yPlaneIncrement;
+        this.zPlaneNext += this.zPlaneIncrement;
+        this.yPlaneT = (this.yPlaneNext - this.position.getY()) / this.direction.getY();
+        this.zPlaneT = (this.zPlaneNext - this.position.getZ()) / this.direction.getZ();
+    }
+
+    private void xIntersect() {
+        this.xCurrent = this.xPlaneNext;
+        this.yCurrent = this.direction.getY() * this.xPlaneT + this.position.getY();
+        this.zCurrent = this.direction.getZ() * this.xPlaneT + this.position.getZ();
+        this.normalCurrent = this.xNormal;
+        // Prepare next intersection
+        this.xPlaneNext += this.xPlaneIncrement;
+        this.xPlaneT = (this.xPlaneNext - this.position.getX()) / this.direction.getX();
+    }
+
+    private void yIntersect() {
+        this.xCurrent = this.direction.getX() * this.yPlaneT + this.position.getX();
+        this.yCurrent = this.yPlaneNext;
+        this.zCurrent = this.direction.getZ() * this.yPlaneT + this.position.getZ();
+        this.normalCurrent = this.yNormal;
+        // Prepare next intersection
+        this.yPlaneNext += this.yPlaneIncrement;
+        this.yPlaneT = (this.yPlaneNext - this.position.getY()) / this.direction.getY();
+    }
+
+    private void zIntersect() {
+        this.xCurrent = this.direction.getX() * this.zPlaneT + this.position.getX();
+        this.yCurrent = this.direction.getY() * this.zPlaneT + this.position.getY();
+        this.zCurrent = this.zPlaneNext;
+        this.normalCurrent = this.zNormal;
+        // Prepare next intersection
+        this.zPlaneNext += this.zPlaneIncrement;
+        this.zPlaneT = (this.zPlaneNext - this.position.getZ()) / this.direction.getZ();
+    }
+
+    private Vector3d getXYZNormal() {
+        if (this.xyzNormal == null) {
+            this.xyzNormal = this.xNormal.add(this.yNormal).add(this.zNormal).normalize();
+        }
+        return this.xyzNormal;
+    }
+
+    private Vector3d getXYNormal() {
+        if (this.xyNormal == null) {
+            this.xyNormal = this.xNormal.add(this.yNormal).normalize();
+        }
+        return this.xyNormal;
+    }
+
+    private Vector3d getXZNormal() {
+        if (this.xzNormal == null) {
+            this.xzNormal = this.xNormal.add(this.zNormal).normalize();
+        }
+        return this.xzNormal;
+    }
+
+    private Vector3d getYZNormal() {
+        if (this.yzNormal == null) {
+            this.yzNormal = this.yNormal.add(this.zNormal).normalize();
+        }
+        return this.yzNormal;
     }
 
     @Override
@@ -279,12 +382,14 @@ public class BlockRay implements Iterator<BlockRayHit> {
     // TODO: remove me once done
     public static void test(CommandSource source) {
         final Player player = (Player) source;
-        for (BlockRayHit hit : from(player).blockLimit(40)) {
+        final Location location = player.getLocation();
+        for (BlockRayHit hit : from(new Location(location.getExtent(), location.getBlockPosition())).direction(Vector3d.ONE).blockLimit(10)) {
             if (!hit.getExtent().containsBlock(hit.getBlockPosition())) {
                 break;
             }
             //noinspection ConstantConditions
             hit.getExtent().setBlockType(hit.getBlockPosition(), BlockTypes.DIAMOND_BLOCK);
+            //System.out.println(hit.getNormal());
         }
     }
 

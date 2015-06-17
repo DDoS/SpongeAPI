@@ -8,6 +8,7 @@ import org.spongepowered.api.world.extent.Extent;
 
 /**
  * Represents a block hit by a ray. Stores more information than a regular location.
+ * Extra object are lazily computed and cached.
  */
 public class BlockRayHit {
 
@@ -16,7 +17,9 @@ public class BlockRayHit {
     private Vector3d position = null;
     private final int xBlock, yBlock, zBlock;
     private Vector3i blockPosition = null;
-    private final Direction face;
+    private final Vector3d direction;
+    private final Vector3d normal;
+    private Direction[] faces = null;
 
     /**
      * Constructs a new block ray hit from the extent that contains it, the coordinates
@@ -26,21 +29,22 @@ public class BlockRayHit {
      * @param x The x coordinate of the block
      * @param y The y coordinate of the block
      * @param z The x coordinate of the block
-     * @param face The entered face
+     * @param direction A normal vector of the ray direction
+     * @param normal The normal of the entered face, edge or corner
      */
-    public BlockRayHit(Extent extent, double x, double y, double z, Direction face) {
+    public BlockRayHit(Extent extent, double x, double y, double z, Vector3d direction, Vector3d normal) {
         this.extent = extent;
         this.x = x;
         this.y = y;
         this.z = z;
-        this.face = face;
+        this.direction = direction;
+        this.normal = normal;
         // Take into account the face through which we entered
         // so we know which block is the correct one
-        final Vector3d normal = face.toVector3d();
-        this.xBlock = GenericMath.floor(x) - (normal.getX() < 0 ? 1 : 0);
+        this.xBlock = GenericMath.floor(x) - (normal.getX() > 0 ? 1 : 0);
         //noinspection SuspiciousNameCombination
-        this.yBlock = GenericMath.floor(y) - (normal.getY() < 0 ? 1 : 0);
-        this.zBlock = GenericMath.floor(z) - (normal.getZ() < 0 ? 1 : 0);
+        this.yBlock = GenericMath.floor(y) - (normal.getY() > 0 ? 1 : 0);
+        this.zBlock = GenericMath.floor(z) - (normal.getZ() > 0 ? 1 : 0);
     }
 
     /**
@@ -131,11 +135,46 @@ public class BlockRayHit {
     }
 
     /**
-     * Returns the face that was entered by the ray.
+     * Returns the direction of the ray as a normalized vector.
      *
-     * @return The entered face
+     * @return The ray direction
      */
-    public Direction getFace() {
-        return this.face;
+    public Vector3d getDirection() {
+        return this.direction;
+    }
+
+    /**
+     * Returns the normal of the entered face, edge or corner.
+     * Edges and corners use the average of the surrounding faces.
+     *
+     * @return The entered face, edge or corner normal
+     */
+    public Vector3d getNormal() {
+        return this.normal;
+    }
+
+    /**
+     * Returns all the intersected faces. In most cases, this is only one face,
+     * but if the ray enters an edge, two faces are returned (the ones that form it).
+     * Similarly for corners, but three faces. The first hit is the starting block
+     * and has no faces.
+     *
+     * @return An array of intersected faces, between zero and three in length
+     */
+    public Direction[] getFaces() {
+        if (this.faces == null) {
+            this.faces = new Direction[(this.normal.getX() != 0 ? 1 : 0) + (this.normal.getY() != 0 ? 1 : 0) + (this.normal.getZ() != 0 ? 1 : 0)];
+            int index = 0;
+            if (this.normal.getX() != 0) {
+                this.faces[index++] = this.normal.getX() > 0 ? Direction.EAST : Direction.WEST;
+            }
+            if (this.normal.getY() != 0) {
+                this.faces[index++] = this.normal.getY() > 0 ? Direction.UP : Direction.DOWN;
+            }
+            if (this.normal.getZ() != 0) {
+                this.faces[index] = this.normal.getZ() > 0 ? Direction.SOUTH : Direction.NORTH;
+            }
+        }
+        return this.faces;
     }
 }

@@ -27,7 +27,6 @@ package org.spongepowered.api.util.blockray;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 
 /**
@@ -77,7 +76,7 @@ public abstract class BlockRayFilter {
      *
      * <p>This method provides the instance of the last block hit, which contains information
      * about the exact intersection coordinates, the block face hit and the affected block.
-     * If no blocks have been hit yet, this will be the starting position with face of {@link Direction#NONE}.</p>
+     * If no blocks have been hit yet, this will be the starting position with normal of {@link Vector3d#ZERO}.</p>
      *
      * @param lastHit The last block hit
      * @return True to continue ray casting, false to stop
