@@ -29,6 +29,9 @@ import com.flowpowered.math.imaginary.Quaterniond;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.player.Player;
@@ -37,17 +40,53 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.extent.Extent;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * A block ray which traces a line and returns all block boundaries intersected in order,
- * starting from the start location. A {@link BlockRayFilter} is used as a predicate
- * to know when the trace should be ended. This class implements the {@link Iterator}
- * interface with the exception of {@link Iterator#remove()}.
+ * starting from the start location. This class implements the {@link Iterator} interface
+ * with the exception of {@link Iterator#remove()}.
+ *
+ * Filters determine at what location a {@link BlockRay} should stop. A filter
+ * is called at the boundary of each new location that a {@link BlockRay} passes through in order
+ * to determine whether the ray cast should continue or terminate at that location.
+ *
+ * <p>Any one instance of a {@link Predicate} should only be run on one path.
+ * It is not specified that {@link Predicate}s have to be stateless, pure functions.
+ * They are allowed to keep state along an individual path, based on the assertion that a
+ * single instance is only called on one path.</p>
+ *
+ * <p>Filters are most useful for limiting the target block a player is looking
+ * at based on some metric, like transparency, block model, or even distance. The standard
+ * Bukkit-like behavior for finding the target block can be achieved with using
+ * {@link BlockRay#ONLY_AIR_FILTER}, optionally combined with
+ * {@link BlockRay#maxDistanceFilter(Vector3d, double)} to limit the target block to be within some
+ * distance.</p>
  *
  * @see BlockRayHit
- * @see BlockRayFilter
  */
 public class BlockRay implements Iterator<BlockRayHit> {
+
+    /**
+     * A block type filter that only permits air as a transparent block.
+     *
+     * <p>This is provided for convenience, as the default behavior in previous systems was to pass
+     * through air blocks only until a non-air block was hit.</p>
+     */
+    public static final Predicate<BlockRayHit> ONLY_AIR_FILTER = blockTypeFilter(BlockTypes.AIR);
+
+    /**
+     * A filter that accepts all blocks. A {@link BlockRay} combined with no other filter than this
+     * one could run endlessly.
+     */
+    public static final Predicate<BlockRayHit> ALL_FILTER = new Predicate<BlockRayHit>() {
+
+        @Override
+        public boolean apply(BlockRayHit lastHit) {
+            return true;
+        }
+
+    };
 
     private static final Vector3d X_POSITIVE = Vector3d.UNIT_X;
     private static final Vector3d X_NEGATIVE = X_POSITIVE.negate();
@@ -57,7 +96,7 @@ public class BlockRay implements Iterator<BlockRayHit> {
     private static final Vector3d Z_NEGATIVE = Z_POSITIVE.negate();
     private static final int DEFAULT_BLOCK_LIMIT = 1000;
     // Ending test predicate
-    private final BlockRayFilter filter;
+    private final Predicate<BlockRayHit> filter;
     // Extent to iterate in
     private final Extent extent;
     // Starting position
@@ -81,7 +120,9 @@ public class BlockRay implements Iterator<BlockRayHit> {
     // Limits to help prevent infinite iteration
     private int blockLimit = DEFAULT_BLOCK_LIMIT, blockCount;
     // Last block hit
-    private BlockRayHit lastHit;
+    private BlockRayHit hit;
+    // If hasNext() is called, we need to move ahead to check the next hit
+    private boolean ahead = false;
 
     /**
      * Constructs a BlockRay that traces from a starting location to an ending one.
@@ -94,8 +135,8 @@ public class BlockRay implements Iterator<BlockRayHit> {
      * @throws IllegalArgumentException If the extents from both points differ
      * @throws NullPointerException is any of the arguments are null
      */
-    public BlockRay(BlockRayFilter filter, Location from, Location to) {
-        this(filter.and(new TargetBlockFilter(to.getBlockPosition())), from, to.getPosition().sub(from.getPosition()));
+    public BlockRay(Predicate<BlockRayHit> filter, Location from, Location to) {
+        this(Predicates.and(filter, new TargetBlockFilter(to.getBlockPosition())), from, to.getPosition().sub(from.getPosition()));
         Preconditions.checkArgument(from.getExtent().equals(to.getExtent()), "Cannot iterate between extents");
     }
 
@@ -109,7 +150,7 @@ public class BlockRay implements Iterator<BlockRayHit> {
      * @throws IllegalArgumentException If direction is the zero vector
      * @throws NullPointerException is any of the arguments are null
      */
-    public BlockRay(BlockRayFilter filter, Location start, Vector3d direction) {
+    public BlockRay(Predicate<BlockRayHit> filter, Location start, Vector3d direction) {
         Preconditions.checkArgument(direction.lengthSquared() != 0, "Direction must be a non-zero vector ('from' and 'to' cannot be the same)");
 
         this.filter = filter;
@@ -189,20 +230,24 @@ public class BlockRay implements Iterator<BlockRayHit> {
         // We start in the block, no plane has been entered yet
         this.normalCurrent = Vector3d.ZERO;
 
-        // Reset the block count
+        // Reset the block
         this.blockCount = 0;
-
-        // Last hit is the starting block
-        this.lastHit = new BlockRayHit(this.extent, this.xCurrent, this.yCurrent, this.zCurrent, this.direction, this.normalCurrent);
+        this.ahead = false;
+        this.hit = null;
     }
 
-    @Override
-    public boolean hasNext() {
-        return (this.blockLimit < 0 || this.blockCount < this.blockLimit) && this.filter.shouldContinue(this.lastHit);
-    }
+    private void advance() {
+        // Check if we're ahead because of hasNext(), if so we don't need to do anything
+        if (this.ahead) {
+            this.ahead = false;
+            return;
+        }
 
-    @Override
-    public BlockRayHit next() {
+        // Check the block limit if in use
+        if (this.blockLimit >= 0 && this.blockCount >= this.blockLimit) {
+            throw new NoSuchElementException("Block limit reached");
+        }
+
         /*
             The ray can be modeled using the following parametric equations:
                 x = d_x * t + p_x
@@ -261,9 +306,31 @@ public class BlockRay implements Iterator<BlockRayHit> {
             zIntersect();
         }
 
-        this.blockCount++;
+        // Check the block filter
+        final BlockRayHit hit = new BlockRayHit(this.extent, this.xCurrent, this.yCurrent, this.zCurrent, this.direction, this.normalCurrent);
+        if (this.filter.apply(hit)) {
+            this.hit = hit;
+            this.blockCount++;
+        } else {
+            throw new NoSuchElementException("Filter limit reached");
+        }
+    }
 
-        return this.lastHit = new BlockRayHit(this.extent, this.xCurrent, this.yCurrent, this.zCurrent, this.direction, this.normalCurrent);
+    @Override
+    public boolean hasNext() {
+        try {
+            advance();
+            ahead = true;
+        } catch (NoSuchElementException exception) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public BlockRayHit next() {
+        advance();
+        return this.hit;
     }
 
     private void xyzIntersect() {
@@ -382,14 +449,12 @@ public class BlockRay implements Iterator<BlockRayHit> {
     // TODO: remove me once done
     public static void test(CommandSource source) {
         final Player player = (Player) source;
-        final Location location = player.getLocation();
-        for (BlockRayHit hit : from(new Location(location.getExtent(), location.getBlockPosition())).direction(Vector3d.ONE).blockLimit(10)) {
-            if (!hit.getExtent().containsBlock(hit.getBlockPosition())) {
+        for (BlockRayHit lastHit : from(player).filter(ONLY_AIR_FILTER)) {
+            if (!lastHit.getLocation().hasBlock()) {
                 break;
             }
             //noinspection ConstantConditions
-            hit.getExtent().setBlockType(hit.getBlockPosition(), BlockTypes.DIAMOND_BLOCK);
-            //System.out.println(hit.getNormal());
+            lastHit.getLocation().replaceWith(BlockTypes.DIAMOND_BLOCK);
         }
     }
 
@@ -398,8 +463,8 @@ public class BlockRay implements Iterator<BlockRayHit> {
      *
      * @param start The starting location
      * @return A new block ray builder
-     * @see #BlockRay(BlockRayFilter, Location, Location)
-     * @see #BlockRay(BlockRayFilter, Location, Vector3d)
+     * @see #BlockRay(Predicate, Location, Location)
+     * @see #BlockRay(Predicate, Location, Vector3d)
      */
     public static BlockRayBuilder from(Location start) {
         Preconditions.checkArgument(start != null, "Start cannot be null");
@@ -427,7 +492,7 @@ public class BlockRay implements Iterator<BlockRayHit> {
     public static class BlockRayBuilder implements Iterable<BlockRayHit> {
 
         private final Location start;
-        private BlockRayFilter filter = null;
+        private Predicate<BlockRayHit> filter = null;
         private Location end = null;
         private Vector3d direction = null;
         private int blockLimit = DEFAULT_BLOCK_LIMIT;
@@ -442,7 +507,7 @@ public class BlockRay implements Iterator<BlockRayHit> {
          * @param filter The filter to use
          * @return This for chained calls
          */
-        public BlockRayBuilder filter(BlockRayFilter filter) {
+        public BlockRayBuilder filter(Predicate<BlockRayHit> filter) {
             Preconditions.checkArgument(this.filter == null, "Filter has already been set");
             Preconditions.checkArgument(filter != null, "Filter cannot be null");
             this.filter = filter;
@@ -496,7 +561,7 @@ public class BlockRay implements Iterator<BlockRayHit> {
          */
         public BlockRay build() {
             Preconditions.checkState(this.end != null || this.direction != null, "Either end point or direction needs to be set");
-            final BlockRayFilter filter = this.filter == null ? BlockRayFilter.ALL : this.filter;
+            final Predicate<BlockRayHit> filter = this.filter == null ? ALL_FILTER : this.filter;
             final BlockRay blockRay = this.end == null ? new BlockRay(filter, this.start, this.direction)
                 : new BlockRay(filter, this.start, this.end);
             blockRay.setBlockLimit(blockLimit);
@@ -509,7 +574,55 @@ public class BlockRay implements Iterator<BlockRayHit> {
         }
     }
 
-    private static class TargetBlockFilter extends BlockRayFilter {
+    /**
+     * A filter that only allows blocks of a certain block type.
+     *
+     * @param type The type of blocks to allow
+     * @return The filter instance
+     */
+    public static Predicate<BlockRayHit> blockTypeFilter(final BlockType type) {
+
+        return new Predicate<BlockRayHit>() {
+
+            @Override
+            public boolean apply(BlockRayHit lastHit) {
+                return lastHit.getLocation().getType().equals(type);
+            }
+
+        };
+
+    }
+
+    /**
+     * A filter that stops at a certain distance.
+     *
+     * <p>Note the behavior of a {@link BlockRay} under this filter: ray casting stops once the
+     * distance is greater than the given distance, meaning that the ending location can at a
+     * distance greater than the distance given. However, this filter still maintains that all
+     * locations on the path are within the maximum distance.</p>
+     *
+     * @param start The starting point of the ray
+     * @param distance The maximum distance allowed
+     * @return The filter instance
+     */
+    public static Predicate<BlockRayHit> maxDistanceFilter(final Vector3d start, double distance) {
+
+        final double distanceSquared = distance * distance;
+
+        return new Predicate<BlockRayHit>() {
+
+            @Override
+            public boolean apply(BlockRayHit lastHit) {
+                final double deltaX = lastHit.getX() - start.getX();
+                final double deltaY = lastHit.getY() - start.getY();
+                final double deltaZ = lastHit.getZ() - start.getZ();
+                return deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ < distanceSquared;
+            }
+        };
+
+    }
+
+    private static class TargetBlockFilter implements Predicate<BlockRayHit> {
 
         private final Vector3i target;
 
@@ -518,7 +631,7 @@ public class BlockRay implements Iterator<BlockRayHit> {
         }
 
         @Override
-        public boolean shouldContinue(BlockRayHit lastHit) {
+        public boolean apply(BlockRayHit lastHit) {
             return !lastHit.getBlockPosition().equals(this.target);
         }
     }
