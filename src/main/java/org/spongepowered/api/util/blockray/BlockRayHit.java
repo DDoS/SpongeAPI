@@ -4,6 +4,7 @@ import com.flowpowered.math.GenericMath;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.util.Direction;
+import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.extent.Extent;
 
 /**
@@ -20,6 +21,7 @@ public class BlockRayHit {
     private final Vector3d direction;
     private final Vector3d normal;
     private Direction[] faces = null;
+    private Location location = null;
 
     /**
      * Constructs a new block ray hit from the extent that contains it, the coordinates
@@ -135,6 +137,18 @@ public class BlockRayHit {
     }
 
     /**
+     * Returns the location of the hit block, <b>not the intersection location</b>.
+     *
+     * @return The location of the hit block
+     */
+    public Location getLocation() {
+        if (this.location == null) {
+            this.location = new Location(this.extent, this.xBlock, this.yBlock, this.zBlock);
+        }
+        return location;
+    }
+
+    /**
      * Returns the direction of the ray as a normalized vector.
      *
      * @return The ray direction
@@ -156,10 +170,9 @@ public class BlockRayHit {
     /**
      * Returns all the intersected faces. In most cases, this is only one face,
      * but if the ray enters an edge, two faces are returned (the ones that form it).
-     * Similarly for corners, but three faces. The first hit is the starting block
-     * and has no faces.
+     * Similarly for corners, but three faces.
      *
-     * @return An array of intersected faces, between zero and three in length
+     * @return An array of intersected faces, between one and three in length
      */
     public Direction[] getFaces() {
         if (this.faces == null) {
