@@ -24,11 +24,23 @@
  */
 package org.spongepowered.api.world.extent;
 
+import com.flowpowered.math.matrix.Matrix3d;
+import com.flowpowered.math.vector.Vector2i;
+
 /**
  * An area containing biomes that can be accessed but not modified.
+ * The data will never change.
  *
  * @see BiomeArea
  */
 public interface ImmutableBiomeArea extends BiomeArea {
+
+    ImmutableBiomeArea getBiomeView(Vector2i newMin, Vector2i newMax);
+
+    ImmutableBiomeArea getBiomeView(Matrix3d transform);
+
+    ImmutableBiomeArea getRelativeBiomeView();
+
+    MutableBiomeArea getBiomeCopy();
 
 }

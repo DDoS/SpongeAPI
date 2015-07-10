@@ -24,6 +24,7 @@
  */
 package org.spongepowered.api.world.extent;
 
+import com.flowpowered.math.matrix.Matrix4d;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
@@ -47,6 +48,12 @@ import java.util.Collection;
  * A mutable object containing blocks, tile entities, entities, and possibly other game objects.
  */
 public interface Extent extends EntityUniverse, TileEntityVolume, WeatherUniverse, MutableBiomeArea, Identifiable {
+
+    Extent getExtentView(Vector3i newMin, Vector3i newMax);
+
+    Extent getExtentView(Matrix4d transform);
+
+    Extent getRelativeExtentView();
 
     /**
      * Gets a location in this extent at the given position.

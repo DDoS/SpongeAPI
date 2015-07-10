@@ -24,6 +24,7 @@
  */
 package org.spongepowered.api.world.extent;
 
+import com.flowpowered.math.matrix.Matrix4d;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.block.BlockType;
 
@@ -55,5 +56,17 @@ public interface MutableBlockVolume extends BlockVolume {
      * @param type The new type
      */
     void setBlockType(int x, int y, int z, BlockType type);
+
+    MutableBlockVolume getBlockView(Vector3i newMin, Vector3i newMax);
+
+    MutableBlockVolume getBlockView(Matrix4d transform);
+
+    MutableBlockVolume getRelativeBlockView();
+
+    UnmodifiableBlockVolume getUnmodifiableBlockView();
+
+    MutableBlockVolume getBlockCopy();
+
+    ImmutableBlockVolume getImmutableBlockCopy();
 
 }

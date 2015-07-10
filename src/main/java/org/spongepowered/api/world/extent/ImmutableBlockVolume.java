@@ -24,11 +24,23 @@
  */
 package org.spongepowered.api.world.extent;
 
+import com.flowpowered.math.matrix.Matrix4d;
+import com.flowpowered.math.vector.Vector3i;
+
 /**
  * A volume containing blocks that can be accessed but not modified.
+ * The data will never change.
  *
  * @see BlockVolume
  */
 public interface ImmutableBlockVolume extends BlockVolume {
+
+    ImmutableBlockVolume getBlockView(Vector3i newMin, Vector3i newMax);
+
+    ImmutableBlockVolume getBlockView(Matrix4d transform);
+
+    ImmutableBlockVolume getRelativeBlockView();
+
+    MutableBlockVolume getBlockCopy();
 
 }

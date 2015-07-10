@@ -26,44 +26,20 @@ package org.spongepowered.api.world.extent;
 
 import com.flowpowered.math.matrix.Matrix3d;
 import com.flowpowered.math.vector.Vector2i;
-import org.spongepowered.api.util.PositionOutOfBoundsException;
-import org.spongepowered.api.world.biome.BiomeType;
 
 /**
- * An area containing biomes that can be accessed and modified.
+ * An area containing biomes that can be accessed but not modified.
+ * The data may be changed by other processes.
  *
  * @see BiomeArea
  */
-public interface MutableBiomeArea extends BiomeArea {
+public interface UnmodifiableBiomeArea extends BiomeArea {
 
-    /**
-     * Sets the biome at the given position in the world.
-     *
-     * @param position The position
-     * @param biome The biome
-     * @throws PositionOutOfBoundsException If the position is outside of the
-     *     bounds of the area
-     */
-    void setBiome(Vector2i position, BiomeType biome);
+    UnmodifiableBiomeArea getBiomeView(Vector2i newMin, Vector2i newMax);
 
-    /**
-     * Sets the biome at the given position in the world.
-     *
-     * @param x The X position
-     * @param z The Z position
-     * @param biome The biome
-     * @throws PositionOutOfBoundsException If the position is outside of the
-     *     bounds of the area
-     */
-    void setBiome(int x, int z, BiomeType biome);
+    UnmodifiableBiomeArea getBiomeView(Matrix3d transform);
 
-    MutableBiomeArea getBiomeView(Vector2i newMin, Vector2i newMax);
-
-    MutableBiomeArea getBiomeView(Matrix3d transform);
-
-    MutableBiomeArea getRelativeBiomeView();
-
-    UnmodifiableBiomeArea getUnmodifiableBiomeView();
+    UnmodifiableBiomeArea getRelativeBiomeView();
 
     MutableBiomeArea getBiomeCopy();
 
