@@ -22,14 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.living.human;
+package org.spongepowered.api.event.entity;
 
-import org.spongepowered.api.entity.living.Human;
-import org.spongepowered.api.event.entity.living.LivingDropItemEvent;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.cause.CauseTracked;
+import org.spongepowered.api.event.inventory.ItemDropEvent;
 
 /**
- * Called when a {@link Human} drops an item(s).
+ * Called when a player drops an item stack.
  */
-public interface HumanDropItemEvent extends HumanEvent, LivingDropItemEvent {
+public interface EntityItemDropEvent extends EntityEvent, CauseTracked, Cancellable, ItemDropEvent {
 
 }

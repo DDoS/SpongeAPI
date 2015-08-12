@@ -83,7 +83,7 @@ import org.spongepowered.api.event.entity.EntityConstructingEvent;
 import org.spongepowered.api.event.entity.EntityDeathEvent;
 import org.spongepowered.api.event.entity.EntityDismountEvent;
 import org.spongepowered.api.event.entity.EntityDisplaceEvent;
-import org.spongepowered.api.event.entity.EntityDropItemEvent;
+import org.spongepowered.api.event.entity.EntityItemDropEvent;
 import org.spongepowered.api.event.entity.EntityBlockHarvestEvent;
 import org.spongepowered.api.event.entity.EntityBlockInteractEvent;
 import org.spongepowered.api.event.entity.EntityInteractEntityEvent;
@@ -105,7 +105,7 @@ import org.spongepowered.api.event.entity.player.PlayerGameModeChangeEvent;
 import org.spongepowered.api.event.entity.player.PlayerChangeWorldEvent;
 import org.spongepowered.api.event.entity.player.PlayerChatEvent;
 import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
-import org.spongepowered.api.event.entity.player.PlayerDropItemEvent;
+import org.spongepowered.api.event.entity.player.PlayerItemDropEvent;
 import org.spongepowered.api.event.entity.player.PlayerBlockHarvestEvent;
 import org.spongepowered.api.event.entity.player.PlayerBlockInteractEvent;
 import org.spongepowered.api.event.entity.player.PlayerInteractEntityEvent;
@@ -727,7 +727,7 @@ public final class SpongeEventFactory {
     }
 
     /**
-     * Creates a new {@link EntityDropItemEvent}.
+     * Creates a new {@link EntityItemDropEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param cause The cause of this event
@@ -735,13 +735,13 @@ public final class SpongeEventFactory {
      * @param droppedItems The items to drop
      * @return A new instance of the event
      */
-    public static EntityDropItemEvent createEntityDropItem(Game game, Cause cause, Entity entity, Collection<ItemStack> droppedItems) {
+    public static EntityItemDropEvent createEntityDropItem(Game game, Cause cause, Entity entity, Collection<ItemStack> droppedItems) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
         values.put("cause", Optional.fromNullable(cause));
         values.put("entity", entity);
         values.put("droppedItems", droppedItems);
-        return createEvent(EntityDropItemEvent.class, values);
+        return createEvent(EntityItemDropEvent.class, values);
     }
 
     /**
@@ -1304,7 +1304,7 @@ public final class SpongeEventFactory {
     }
 
     /**
-     * Creates a new {@link PlayerDropItemEvent}.
+     * Creates a new {@link PlayerItemDropEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param entity The player
@@ -1312,14 +1312,14 @@ public final class SpongeEventFactory {
      * @param droppedItems The items to drop
      * @return A new instance of the event
      */
-    public static PlayerDropItemEvent createPlayerDropItem(Game game, Player entity, Cause cause, Collection<ItemStack> droppedItems) {
+    public static PlayerItemDropEvent createPlayerDropItem(Game game, Player entity, Cause cause, Collection<ItemStack> droppedItems) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
         values.put("cause", Optional.fromNullable(cause));
         values.put("entity", entity);
         values.put("user", entity);
         values.put("droppedItems", droppedItems);
-        return createEvent(PlayerDropItemEvent.class, values);
+        return createEvent(PlayerItemDropEvent.class, values);
     }
 
     /**
