@@ -22,15 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.living;
+package org.spongepowered.api.util.event.superclasses;
 
-import org.spongepowered.api.entity.living.Living;
-import org.spongepowered.api.event.entity.EntityBreakBlockEvent;
-import org.spongepowered.api.world.Location;
+import com.google.common.base.Predicate;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.event.AbstractEvent;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.entity.EntityBulkEvent;
 
-/**
- * Called when a {@link Living} breaks a {@link Location}.
- */
-public interface LivingBreakBlockEvent extends LivingChangeBlockEvent, EntityBreakBlockEvent {
+import java.util.Iterator;
+
+public abstract class AbstractEntityBulkEvent extends AbstractEvent implements EntityBulkEvent {
+
+    @Override
+    public void filterEntities(Predicate<Entity> predicate) {
+        if (this instanceof Cancellable) {
+            Iterator<Entity> iterator = this.getEntities().iterator();
+            while (iterator.hasNext()) {
+                if (!predicate.apply(iterator.next())) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
 
 }

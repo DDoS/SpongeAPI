@@ -31,6 +31,6 @@ import org.spongepowered.api.world.Location;
 /**
  * Called when a {@link Human} places a {@link Location}.
  */
-public interface HumanPlaceBlockEvent extends HumanChangeBlockEvent, LivingPlaceBlockEvent {
+public interface HumanPlaceBlockEvent extends HumanBlockChangeEvent, LivingPlaceBlockEvent {
 
 }
