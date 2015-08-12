@@ -22,15 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.player;
+package org.spongepowered.api.event.entity.living.human;
 
-import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.entity.living.human.HumanPlaceBlockEvent;
+import org.spongepowered.api.event.entity.living.LivingItemPickupEvent;
 
 /**
- * Called when a {@link Player} places a {@link BlockType}.
+ * An event where a human is picking up an item.
  */
-public interface PlayerPlaceBlockEvent extends PlayerBlockChangeEvent, HumanPlaceBlockEvent {
+public interface HumanItemPickupEvent extends HumanEvent, LivingItemPickupEvent {
 
 }

@@ -22,15 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.player;
+package org.spongepowered.api.event.entity.living.human;
 
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.entity.player.gamemode.GameMode;
-import org.spongepowered.api.event.entity.living.human.HumanChangeGameModeEvent;
+import org.spongepowered.api.entity.living.Human;
+import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.entity.living.LivingBlockHarvestEvent;
+import org.spongepowered.api.world.Location;
 
 /**
- * Called when a {@link Player} changes {@link GameMode}.
+ * Called when a {@link Human} harvests a {@link Location}.
  */
-public interface PlayerChangeGameModeEvent extends HumanChangeGameModeEvent, PlayerEvent {
+public interface HumanBlockHarvestEvent extends HumanEvent, LivingBlockHarvestEvent {
+
+    /**
+     * Gets whether the human was using an item with silk touch to harvest the
+     * block.
+     *
+     * <p>To change this value, the event must be cancelled and a new event
+     * posted with the desired value, See
+     * {@link SpongeEventFactory#createPlayerHarvestBlock}.</p>
+     *
+     * @return True if the event is a silk touch operation
+     */
+    boolean isSilkTouch();
 
 }

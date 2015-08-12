@@ -22,15 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity;
+package org.spongepowered.api.event.entity.player;
 
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.block.BlockHarvestEvent;
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.event.entity.living.human.HumanBlockInteractEvent;
 import org.spongepowered.api.world.Location;
 
 /**
- * Called when an {@link Entity} harvests a {@link Location}.
+ * Called when a {@link Player} interacts with a {@link Location}.
  */
-public interface EntityHarvestBlockEvent extends EntityEvent, BlockHarvestEvent {
+public interface PlayerBlockInteractEvent extends PlayerInteractEvent, HumanBlockInteractEvent {
 
 }

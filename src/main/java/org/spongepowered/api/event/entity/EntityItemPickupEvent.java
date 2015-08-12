@@ -22,13 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.living.human;
+package org.spongepowered.api.event.entity;
 
-import org.spongepowered.api.event.entity.living.LivingPickUpItemEvent;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.Item;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.inventory.InventoryEvent;
+
+import java.util.Collection;
 
 /**
- * An event where a human is picking up an item.
+ * Called when a entity picks up an item(s).
  */
-public interface HumanPickUpItemEvent extends HumanEvent, LivingPickUpItemEvent {
+public interface EntityItemPickupEvent extends EntityEvent, InventoryEvent, Cancellable {
 
+    /**
+     * Gets the items as an {@link Entity} that the entity is picking up.
+     *
+     * @return The items as entities
+     */
+    Collection<Item> getItems();
 }

@@ -22,14 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.player;
+package org.spongepowered.api.event.entity.living;
 
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.entity.living.human.HumanPickUpItemEvent;
+import org.spongepowered.api.entity.living.Living;
+import org.spongepowered.api.event.entity.EntityBlockHarvestEvent;
+import org.spongepowered.api.world.Location;
 
 /**
- * An event where a {@link Player} is picking up an item.
+ * Called when a {@link Living} entity harvests a {@link Location}.
  */
-public interface PlayerPickUpItemEvent extends PlayerEvent, HumanPickUpItemEvent {
+public interface LivingBlockHarvestEvent extends LivingEvent, EntityBlockHarvestEvent {
 
 }

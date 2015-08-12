@@ -84,15 +84,15 @@ import org.spongepowered.api.event.entity.EntityDeathEvent;
 import org.spongepowered.api.event.entity.EntityDismountEvent;
 import org.spongepowered.api.event.entity.EntityDisplaceEvent;
 import org.spongepowered.api.event.entity.EntityDropItemEvent;
-import org.spongepowered.api.event.entity.EntityHarvestBlockEvent;
-import org.spongepowered.api.event.entity.EntityInteractBlockEvent;
+import org.spongepowered.api.event.entity.EntityBlockHarvestEvent;
+import org.spongepowered.api.event.entity.EntityBlockInteractEvent;
 import org.spongepowered.api.event.entity.EntityInteractEntityEvent;
 import org.spongepowered.api.event.entity.EntityInteractEvent;
 import org.spongepowered.api.event.entity.EntityLeashEvent;
 import org.spongepowered.api.event.entity.EntityMountEvent;
 import org.spongepowered.api.event.entity.EntityMoveEvent;
-import org.spongepowered.api.event.entity.EntityPickUpItemEvent;
-import org.spongepowered.api.event.entity.EntityPlaceBlockEvent;
+import org.spongepowered.api.event.entity.EntityItemPickupEvent;
+import org.spongepowered.api.event.entity.EntityBlockPlaceEvent;
 import org.spongepowered.api.event.entity.EntitySpawnEvent;
 import org.spongepowered.api.event.entity.EntityTameEvent;
 import org.spongepowered.api.event.entity.EntityTeleportEvent;
@@ -101,19 +101,19 @@ import org.spongepowered.api.event.entity.EntityUpdateEvent;
 import org.spongepowered.api.event.entity.ProjectileLaunchEvent;
 import org.spongepowered.api.event.entity.player.PlayerBlockBreakEvent;
 import org.spongepowered.api.event.entity.player.PlayerBlockChangeEvent;
-import org.spongepowered.api.event.entity.player.PlayerChangeGameModeEvent;
+import org.spongepowered.api.event.entity.player.PlayerGameModeChangeEvent;
 import org.spongepowered.api.event.entity.player.PlayerChangeWorldEvent;
 import org.spongepowered.api.event.entity.player.PlayerChatEvent;
 import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
 import org.spongepowered.api.event.entity.player.PlayerDropItemEvent;
-import org.spongepowered.api.event.entity.player.PlayerHarvestBlockEvent;
-import org.spongepowered.api.event.entity.player.PlayerInteractBlockEvent;
+import org.spongepowered.api.event.entity.player.PlayerBlockHarvestEvent;
+import org.spongepowered.api.event.entity.player.PlayerBlockInteractEvent;
 import org.spongepowered.api.event.entity.player.PlayerInteractEntityEvent;
 import org.spongepowered.api.event.entity.player.PlayerInteractEvent;
 import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
 import org.spongepowered.api.event.entity.player.PlayerMoveEvent;
-import org.spongepowered.api.event.entity.player.PlayerPickUpItemEvent;
-import org.spongepowered.api.event.entity.player.PlayerPlaceBlockEvent;
+import org.spongepowered.api.event.entity.player.PlayerItemPickupEvent;
+import org.spongepowered.api.event.entity.player.PlayerBlockPlaceEvent;
 import org.spongepowered.api.event.entity.player.PlayerQuitEvent;
 import org.spongepowered.api.event.entity.player.PlayerRespawnEvent;
 import org.spongepowered.api.event.entity.player.PlayerUpdateEvent;
@@ -745,7 +745,7 @@ public final class SpongeEventFactory {
     }
 
     /**
-     * Creates a new {@link EntityHarvestBlockEvent}.
+     * Creates a new {@link EntityBlockHarvestEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param cause The cause of the event, can be null
@@ -756,7 +756,7 @@ public final class SpongeEventFactory {
      *        {@link BlockHarvestEvent#setDropChance(float)}
      * @return A new instance of the event
      */
-    public static EntityHarvestBlockEvent createEntityHarvestBlock(Game game, Cause cause, Entity entity, Location location,
+    public static EntityBlockHarvestEvent createEntityHarvestBlock(Game game, Cause cause, Entity entity, Location location,
             Collection<ItemStack> droppedItems, float dropChance) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
@@ -766,11 +766,11 @@ public final class SpongeEventFactory {
         values.put("block", location.getBlock());
         values.put("droppedItems", droppedItems);
         values.put("dropChance", dropChance);
-        return createEvent(EntityHarvestBlockEvent.class, values);
+        return createEvent(EntityBlockHarvestEvent.class, values);
     }
 
     /**
-     * Creates a new {@link EntityInteractBlockEvent}.
+     * Creates a new {@link EntityBlockInteractEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param cause The cause of the event, can be null
@@ -779,7 +779,7 @@ public final class SpongeEventFactory {
      * @param side The side of the block affected
      * @return A new instance of the event
      */
-    public static EntityInteractBlockEvent createEntityInteractBlock(Game game, Cause cause, Entity entity, Location location, Direction side) {
+    public static EntityBlockInteractEvent createEntityInteractBlock(Game game, Cause cause, Entity entity, Location location, Direction side) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
         values.put("cause", Optional.fromNullable(cause));
@@ -787,7 +787,7 @@ public final class SpongeEventFactory {
         values.put("location", location);
         values.put("block", location.getBlock());
         values.put("side", side);
-        return createEvent(EntityInteractBlockEvent.class, values);
+        return createEvent(EntityBlockInteractEvent.class, values);
     }
 
     /**
@@ -889,7 +889,7 @@ public final class SpongeEventFactory {
     }
 
     /**
-     * Creates a new {@link EntityPickUpItemEvent}.
+     * Creates a new {@link EntityItemPickupEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param entity The entity
@@ -897,17 +897,17 @@ public final class SpongeEventFactory {
      * @param inventory The inventory involved with the event
      * @return A new instance of the event
      */
-    public static EntityPickUpItemEvent createEntityPickUpItem(Game game, Entity entity, Collection<Entity> items, Inventory inventory) {
+    public static EntityItemPickupEvent createEntityPickUpItem(Game game, Entity entity, Collection<Entity> items, Inventory inventory) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
         values.put("entity", entity);
         values.put("items", items);
         values.put("inventory", inventory);
-        return createEvent(EntityPickUpItemEvent.class, values);
+        return createEvent(EntityItemPickupEvent.class, values);
     }
 
     /**
-     * Creates a new {@link EntityPlaceBlockEvent}.
+     * Creates a new {@link EntityBlockPlaceEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param cause The cause of the event, can be null
@@ -916,7 +916,7 @@ public final class SpongeEventFactory {
      * @param replacementBlock The block that will replace the existing block
      * @return A new instance of the event
      */
-    public static EntityPlaceBlockEvent createEntityPlaceBlock(Game game, Cause cause, Entity entity, Location location,
+    public static EntityBlockPlaceEvent createEntityPlaceBlock(Game game, Cause cause, Entity entity, Location location,
             BlockSnapshot replacementBlock) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
@@ -925,7 +925,7 @@ public final class SpongeEventFactory {
         values.put("block", location.getBlock());
         values.put("entity", entity);
         values.put("replacementBlock", replacementBlock);
-        return createEvent(EntityPlaceBlockEvent.class, values);
+        return createEvent(EntityBlockPlaceEvent.class, values);
     }
 
     /**
@@ -1206,7 +1206,7 @@ public final class SpongeEventFactory {
     }
 
     /**
-     * Creates a new {@link PlayerChangeGameModeEvent}.
+     * Creates a new {@link PlayerGameModeChangeEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param entity The player
@@ -1214,14 +1214,14 @@ public final class SpongeEventFactory {
      * @param oldGameMode The Player's old game mode
      * @return A new instance of the event
      */
-    public static PlayerChangeGameModeEvent createPlayerChangeGameMode(Game game, Player entity, GameMode newGameMode, GameMode oldGameMode) {
+    public static PlayerGameModeChangeEvent createPlayerChangeGameMode(Game game, Player entity, GameMode newGameMode, GameMode oldGameMode) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
         values.put("entity", entity);
         values.put("user", entity);
         values.put("newGameMode", newGameMode);
         values.put("oldGameMode", oldGameMode);
-        return createEvent(PlayerChangeGameModeEvent.class, values);
+        return createEvent(PlayerGameModeChangeEvent.class, values);
     }
 
     /**
@@ -1323,7 +1323,7 @@ public final class SpongeEventFactory {
     }
 
     /**
-     * Creates a new {@link PlayerHarvestBlockEvent}.
+     * Creates a new {@link PlayerBlockHarvestEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param cause The cause of the event, can be null
@@ -1335,7 +1335,7 @@ public final class SpongeEventFactory {
      * @param silkTouch Whether the player is harvesting with silk touch
      * @return A new instance of the event
      */
-    public static PlayerHarvestBlockEvent createPlayerHarvestBlock(Game game, Cause cause, Player entity, Location location,
+    public static PlayerBlockHarvestEvent createPlayerHarvestBlock(Game game, Cause cause, Player entity, Location location,
             Collection<ItemStack> droppedItems, float dropChance, boolean silkTouch) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
@@ -1347,11 +1347,11 @@ public final class SpongeEventFactory {
         values.put("droppedItems", droppedItems);
         values.put("dropChance", dropChance);
         values.put("silkTouch", silkTouch);
-        return createEvent(PlayerHarvestBlockEvent.class, values);
+        return createEvent(PlayerBlockHarvestEvent.class, values);
     }
 
     /**
-     * Creates a new {@link PlayerInteractBlockEvent}.
+     * Creates a new {@link PlayerBlockInteractEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param cause The cause of the event, can be null
@@ -1362,7 +1362,7 @@ public final class SpongeEventFactory {
      * @param clickedPosition The clicked position
      * @return A new instance of the event
      */
-    public static PlayerInteractBlockEvent createPlayerInteractBlock(Game game, Cause cause, Player entity, Location location, Direction side,
+    public static PlayerBlockInteractEvent createPlayerInteractBlock(Game game, Cause cause, Player entity, Location location, Direction side,
             EntityInteractionType interactionType, @Nullable Vector3d clickedPosition) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
@@ -1374,7 +1374,7 @@ public final class SpongeEventFactory {
         values.put("side", side);
         values.put("interactionType", interactionType);
         values.put("clickedPosition", Optional.fromNullable(clickedPosition));
-        return createEvent(PlayerInteractBlockEvent.class, values);
+        return createEvent(PlayerBlockInteractEvent.class, values);
     }
 
     /**
@@ -1464,7 +1464,7 @@ public final class SpongeEventFactory {
     }
 
     /**
-     * Creates a new {@link PlayerPickUpItemEvent}.
+     * Creates a new {@link PlayerItemPickupEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param entity The player
@@ -1472,18 +1472,18 @@ public final class SpongeEventFactory {
      * @param inventory The inventory involved with the event
      * @return A new instance of the event
      */
-    public static PlayerPickUpItemEvent createPlayerPickUpItem(Game game, Player entity, Collection<Entity> items, Inventory inventory) {
+    public static PlayerItemPickupEvent createPlayerPickUpItem(Game game, Player entity, Collection<Entity> items, Inventory inventory) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
         values.put("entity", entity);
         values.put("user", entity);
         values.put("items", items);
         values.put("inventory", inventory);
-        return createEvent(PlayerPickUpItemEvent.class, values);
+        return createEvent(PlayerItemPickupEvent.class, values);
     }
 
     /**
-     * Creates a new {@link PlayerPlaceBlockEvent}.
+     * Creates a new {@link PlayerBlockPlaceEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param cause The cause of the event, can be null
@@ -1493,7 +1493,7 @@ public final class SpongeEventFactory {
      * @param blockFace The face the block was placed
      * @return A new instance of the event
      */
-    public static PlayerPlaceBlockEvent createPlayerPlaceBlock(Game game, Cause cause, Player entity, Location location,
+    public static PlayerBlockPlaceEvent createPlayerPlaceBlock(Game game, Cause cause, Player entity, Location location,
             BlockSnapshot replacementBlock, Direction blockFace) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
@@ -1504,7 +1504,7 @@ public final class SpongeEventFactory {
         values.put("block", location.getBlock());
         values.put("replacementBlock", replacementBlock);
         values.put("blockFace", blockFace);
-        return createEvent(PlayerPlaceBlockEvent.class, values);
+        return createEvent(PlayerBlockPlaceEvent.class, values);
     }
 
     /**

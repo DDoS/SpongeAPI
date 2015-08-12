@@ -22,15 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity;
+package org.spongepowered.api.event.entity.living;
 
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.block.BlockPlaceEvent;
+import org.spongepowered.api.entity.living.Living;
+import org.spongepowered.api.event.entity.EntityBlockInteractEvent;
 import org.spongepowered.api.world.Location;
 
 /**
- * Called when an {@link Entity} places a {@link Location}.
+ * Called when a {@link Living} interacts with a {@link Location}.
  */
-public interface EntityPlaceBlockEvent extends EntityBlockChangeEvent, BlockPlaceEvent {
+public interface LivingBlockInteractEvent extends LivingInteractEvent, EntityBlockInteractEvent {
 
 }

@@ -22,24 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity;
+package org.spongepowered.api.event.entity.living.human;
 
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.Item;
+import org.spongepowered.api.entity.living.Human;
+import org.spongepowered.api.entity.player.gamemode.GameMode;
 import org.spongepowered.api.event.Cancellable;
-import org.spongepowered.api.event.inventory.InventoryEvent;
-
-import java.util.Collection;
 
 /**
- * Called when a entity picks up an item(s).
+ * Called when a {@link Human} changes {@link GameMode}.
  */
-public interface EntityPickUpItemEvent extends EntityEvent, InventoryEvent, Cancellable {
+public interface HumanGameModeChangeEvent extends HumanEvent, Cancellable {
 
     /**
-     * Gets the items as an {@link Entity} that the entity is picking up.
+     * Gets the old {@link GameMode} of the human.
      *
-     * @return The items as entities
+     * @return The old {@link GameMode}.
      */
-    Collection<Item> getItems();
+    GameMode getOldGameMode();
+
+    /**
+     * Gets the new {@link GameMode} of the human.
+     *
+     * @return The new {@link GameMode}.
+     */
+    GameMode getNewGameMode();
+
+    /**
+     * Sets the new {@link GameMode} of the human.
+     *
+     * @param newGameMode The new {@link GameMode} value.
+     */
+    void setNewGameMode(GameMode newGameMode);
 }

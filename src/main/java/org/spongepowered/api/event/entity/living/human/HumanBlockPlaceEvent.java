@@ -25,25 +25,12 @@
 package org.spongepowered.api.event.entity.living.human;
 
 import org.spongepowered.api.entity.living.Human;
-import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.entity.living.LivingHarvestBlockEvent;
+import org.spongepowered.api.event.entity.living.LivingBlockPlaceEvent;
 import org.spongepowered.api.world.Location;
 
 /**
- * Called when a {@link Human} harvests a {@link Location}.
+ * Called when a {@link Human} places a {@link Location}.
  */
-public interface HumanHarvestBlockEvent extends HumanEvent, LivingHarvestBlockEvent {
-
-    /**
-     * Gets whether the human was using an item with silk touch to harvest the
-     * block.
-     *
-     * <p>To change this value, the event must be cancelled and a new event
-     * posted with the desired value, See
-     * {@link SpongeEventFactory#createPlayerHarvestBlock}.</p>
-     *
-     * @return True if the event is a silk touch operation
-     */
-    boolean isSilkTouch();
+public interface HumanBlockPlaceEvent extends HumanBlockChangeEvent, LivingBlockPlaceEvent {
 
 }
