@@ -33,6 +33,6 @@ import org.spongepowered.api.potion.PotionEffect;
  *
  * <p>Examples may include: a Player drinking milk.</p>
  */
-public interface LivingRemovePotionEffectEvent extends LivingPotionEffectEvent, Cancellable {
+public interface LivingPotionEffectRemoveEvent extends LivingPotionEffectEvent, Cancellable {
 
 }

@@ -30,6 +30,6 @@ import org.spongepowered.api.potion.PotionEffect;
 /**
  * An event that occurs when a {@link Living}'s {@link PotionEffect} expires.
  */
-public interface LivingExpirePotionEffectEvent extends LivingPotionEffectEvent {
+public interface LivingPotionEffectExpireEvent extends LivingPotionEffectEvent {
 
 }

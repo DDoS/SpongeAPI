@@ -31,6 +31,6 @@ import org.spongepowered.api.potion.PotionEffect;
 /**
  * An event that occurs when a {@link Living} gains a {@link PotionEffect}.
  */
-public interface LivingAddPotionEffectEvent extends LivingPotionEffectEvent, Cancellable {
+public interface LivingPotionEffectGainEvent extends LivingPotionEffectEvent, Cancellable {
 
 }
