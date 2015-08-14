@@ -22,48 +22,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.inventory;
+package org.spongepowered.api.event.network;
 
 import org.spongepowered.api.event.Cancellable;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.crafting.CraftingInventory;
-import org.spongepowered.api.item.recipe.Recipe;
-
-import java.util.List;
+import org.spongepowered.api.network.PlayerConnection;
 
 /**
- * A CraftItemEvent is fired when an item is crafted from a
- * player inventory or workbench inventory, or any other crafting inventory.
+ * An event that occurs when a {@link PlayerConnection} registers a channel with the server.
  */
-public interface CraftItemEvent extends ViewerEvent, Cancellable {
+public interface PlayerConnectionChannelRegisterEvent extends PlayerConnectionEvent, Cancellable {
 
     /**
-     * Retrieves the CraftingInventory involved with this event.
+     * Gets the name of the channel being registered.
      *
-     * @return The crafting inventory
+     * @return The channel being registered
      */
-    CraftingInventory getInventory();
-
-    /**
-     * Retrieves the recipe that has been crafted as a result of this event.
-     *
-     * @return The recipe
-     */
-    Recipe getRecipe();
-
-    /**
-     * Gets the ItemStacks that are a result of this crafting event.
-     *
-     * @return The results
-     */
-    List<ItemStack> getResults();
-
-    /**
-     * Gets the types of the results of this crafting event.
-     *
-     * @return The result types
-     */
-    List<ItemType> getResultTypes();
+    String getChannelRegistered();
 
 }

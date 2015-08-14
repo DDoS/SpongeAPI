@@ -25,11 +25,11 @@
 package org.spongepowered.api.event.entity.player;
 
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.entity.living.human.HumanChangeHealthEvent;
+import org.spongepowered.api.event.entity.living.human.HumanHealthChangeEvent;
 
 /**
  * Called when the health of an {@link Entity} changes.
  */
-public interface PlayerChangeHealthEvent extends PlayerEvent, HumanChangeHealthEvent {
+public interface PlayerHealthChangeEvent extends PlayerEvent, HumanHealthChangeEvent {
 
 }

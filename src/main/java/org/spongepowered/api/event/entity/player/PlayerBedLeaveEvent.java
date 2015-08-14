@@ -26,13 +26,13 @@ package org.spongepowered.api.event.entity.player;
 
 import com.google.common.base.Optional;
 import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.entity.living.human.HumanLeaveBedEvent;
+import org.spongepowered.api.event.entity.living.human.HumanBedLeaveEvent;
 import org.spongepowered.api.world.Location;
 
 /**
  * Called when a {@link Player} leaves a bed.
  */
-public interface PlayerLeaveBedEvent extends HumanLeaveBedEvent, PlayerSleepEvent {
+public interface PlayerBedLeaveEvent extends HumanBedLeaveEvent, PlayerSleepEvent {
 
     /**
      * Gets whether the spawn location for the player was set.

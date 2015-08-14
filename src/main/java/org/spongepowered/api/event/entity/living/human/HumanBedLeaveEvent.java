@@ -30,7 +30,7 @@ import org.spongepowered.api.world.Location;
 /**
  * Called when a Human leaves a bed.
  */
-public interface HumanLeaveBedEvent extends HumanSleepEvent {
+public interface HumanBedLeaveEvent extends HumanSleepEvent {
 
     /**
      * Gets whether the spawn location for the human was set.

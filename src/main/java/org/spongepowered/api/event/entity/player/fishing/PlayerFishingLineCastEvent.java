@@ -22,20 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.network;
+package org.spongepowered.api.event.entity.player.fishing;
 
-import org.spongepowered.api.network.PlayerConnection;
+import org.spongepowered.api.event.entity.living.human.fishing.HumanFishingLineCastEvent;
 
 /**
- * An event that occurs when a {@link PlayerConnection} unregisters a channel with the server.
+ * Called when a {@link org.spongepowered.api.entity.player.Player} casts
+ * a fishing line.
  */
-public interface PlayerConnectionUnregisterChannelEvent extends PlayerConnectionEvent {
-
-    /**
-     * The name of the channel unregistered.
-     *
-     * @return The name of the channel
-     */
-    String getChannelUnregistered();
+public interface PlayerFishingLineCastEvent extends HumanFishingLineCastEvent, PlayerFishEvent {
 
 }

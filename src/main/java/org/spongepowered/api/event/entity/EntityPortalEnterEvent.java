@@ -22,14 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.player.fishing;
-
-import org.spongepowered.api.event.entity.living.human.fishing.HumanHookedEntityEvent;
+package org.spongepowered.api.event.entity;
 
 /**
- * Called when a {@link org.spongepowered.api.entity.player.Player} hooks an
- * {@link org.spongepowered.api.entity.Entity} with a fishing rod.
+ * An event when an entity enters a portal.
+ *
+ * <p>The portal can be any type of portal, may teleport
+ * and it may not teleport.</p>
  */
-public interface PlayerHookedEntityEvent extends HumanHookedEntityEvent, PlayerFishEvent {
+public interface EntityPortalEnterEvent extends EntityEvent {
 
 }

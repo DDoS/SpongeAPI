@@ -22,46 +22,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.living.human.fishing;
+package org.spongepowered.api.event.inventory;
 
-import com.google.common.base.Optional;
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.ExperienceEvent;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.crafting.CraftingInventory;
+import org.spongepowered.api.item.recipe.Recipe;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
 /**
- * Called when a {@link org.spongepowered.api.entity.living.Human} retracts
- * a fishing line.
+ * Fired when an item is crafted from a player inventory or workbench inventory, or any other crafting inventory.
  */
-public interface HumanRetractFishingLineEvent extends HumanFishEvent, ExperienceEvent {
+public interface ItemCraftEvent extends ViewerEvent, Cancellable {
 
     /**
-     * Gets the {@link ItemStack} that will be given, if available.
+     * Retrieves the CraftingInventory involved with this event.
      *
-     * @return The {@link ItemStack} that will be given
+     * @return The crafting inventory
      */
-    Optional<ItemStack> getCaughtItem();
+    CraftingInventory getInventory();
 
     /**
-     * Sets the {@link ItemStack} that will be given, if available.
+     * Retrieves the recipe that has been crafted as a result of this event.
      *
-     * @param item The {@link ItemStack} to set
+     * @return The recipe
      */
-    void setCaughtItem(@Nullable ItemStack item);
+    Recipe getRecipe();
 
     /**
-     * Gets the {@link Entity} hooked, if available.
+     * Gets the ItemStacks that are a result of this crafting event.
      *
-     * @return The hooked {@link Entity}
+     * @return The results
      */
-    Optional<Entity> getCaughtEntity();
+    List<ItemStack> getResults();
 
     /**
-     * Sets the {@link Entity} hooked, if available.
+     * Gets the types of the results of this crafting event.
      *
-     * @param entity The hooked {@link Entity} to set
+     * @return The result types
      */
-    void setCaughtEntity(@Nullable Entity entity);
+    List<ItemType> getResultTypes();
+
 }

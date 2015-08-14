@@ -22,21 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.network;
-
-import org.spongepowered.api.event.Cancellable;
-import org.spongepowered.api.network.PlayerConnection;
+package org.spongepowered.api.event.entity;
 
 /**
- * An event that occurs when a {@link PlayerConnection} registers a channel with the server.
+ * An event when an entity exits a portal.
+ *
+ * <p>The portal can be any type of portal, may teleport
+ * and it may not teleport.</p>
  */
-public interface PlayerConnectionRegisterChannelEvent extends PlayerConnectionEvent, Cancellable {
-
-    /**
-     * Gets the name of the channel being registered.
-     *
-     * @return The channel being registered
-     */
-    String getChannelRegistered();
+public interface EntityPortalExitEvent extends EntityEvent {
 
 }

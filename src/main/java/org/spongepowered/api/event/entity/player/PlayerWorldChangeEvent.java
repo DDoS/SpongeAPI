@@ -22,14 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity;
+package org.spongepowered.api.event.entity.player;
+
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.world.World;
 
 /**
- * An event when an entity exits a portal.
- *
- * <p>The portal can be any type of portal, may teleport
- * and it may not teleport.</p>
+ * Called when the {@link Player} changes {@link World}.
  */
-public interface EntityExitPortalEvent extends EntityEvent {
+public interface PlayerWorldChangeEvent extends PlayerEvent, Cancellable {
 
+    /**
+     * Gets the {@link World} the player is leaving.
+     *
+     * @return The from world.
+     */
+    World getFromWorld();
+
+    /**
+     * Gets the {@link World} the player is entering.
+     *
+     * @return The to world.
+     */
+    World getToWorld();
 }

@@ -22,37 +22,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.living;
+package org.spongepowered.api.event.network;
 
-import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
-import org.spongepowered.api.entity.living.Living;
-import org.spongepowered.api.event.Cancellable;
-import org.spongepowered.api.event.cause.CauseTracked;
+import org.spongepowered.api.network.PlayerConnection;
 
 /**
- * Called when the health of an {@link Living} changes.
+ * An event that occurs when a {@link PlayerConnection} unregisters a channel with the server.
  */
-public interface LivingChangeHealthEvent extends LivingEvent, CauseTracked, Cancellable {
+public interface PlayerConnectionChannelUnregisterEvent extends PlayerConnectionEvent {
 
     /**
-     * Gets the old health data of the {@link Living}.
+     * The name of the channel unregistered.
      *
-     * @return The old health data.
+     * @return The name of the channel
      */
-    HealthData getOldData();
-
-    /**
-     * Gets the new health data of the {@link Living}.
-     *
-     * @return The new health data.
-     */
-    HealthData getNewData();
-
-    /**
-     * Sets the new health data of the {@link Living}.
-     *
-     * @param newData The new health data
-     */
-    void setNewData(HealthData newData);
+    String getChannelUnregistered();
 
 }

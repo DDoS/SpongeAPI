@@ -22,14 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.living.human;
-
-import org.spongepowered.api.entity.living.Human;
-import org.spongepowered.api.event.entity.living.LivingChangeHealthEvent;
+package org.spongepowered.api.event.entity.living.human.fishing;
 
 /**
- * Called when the health of an {@link Human} changes.
+ * Called when a {@link org.spongepowered.api.entity.living.Human} casts
+ * a fishing line.
  */
-public interface HumanChangeHealthEvent extends HumanEvent, LivingChangeHealthEvent {
+public interface HumanFishingLineCastEvent extends HumanFishEvent {
 
 }

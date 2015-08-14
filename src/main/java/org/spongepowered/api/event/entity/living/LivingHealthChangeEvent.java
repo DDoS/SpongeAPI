@@ -22,14 +22,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity;
+package org.spongepowered.api.event.entity.living;
+
+import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
+import org.spongepowered.api.entity.living.Living;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.cause.CauseTracked;
 
 /**
- * An event when an entity enters a portal.
- *
- * <p>The portal can be any type of portal, may teleport
- * and it may not teleport.</p>
+ * Called when the health of an {@link Living} changes.
  */
-public interface EntityEnterPortalEvent extends EntityEvent {
+public interface LivingHealthChangeEvent extends LivingEvent, CauseTracked, Cancellable {
+
+    /**
+     * Gets the old health data of the {@link Living}.
+     *
+     * @return The old health data.
+     */
+    HealthData getOldData();
+
+    /**
+     * Gets the new health data of the {@link Living}.
+     *
+     * @return The new health data.
+     */
+    HealthData getNewData();
+
+    /**
+     * Sets the new health data of the {@link Living}.
+     *
+     * @param newData The new health data
+     */
+    void setNewData(HealthData newData);
 
 }

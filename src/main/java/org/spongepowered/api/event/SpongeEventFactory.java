@@ -102,7 +102,7 @@ import org.spongepowered.api.event.entity.ProjectileLaunchEvent;
 import org.spongepowered.api.event.entity.player.PlayerBlockBreakEvent;
 import org.spongepowered.api.event.entity.player.PlayerBlockChangeEvent;
 import org.spongepowered.api.event.entity.player.PlayerGameModeChangeEvent;
-import org.spongepowered.api.event.entity.player.PlayerChangeWorldEvent;
+import org.spongepowered.api.event.entity.player.PlayerWorldChangeEvent;
 import org.spongepowered.api.event.entity.player.PlayerChatEvent;
 import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
 import org.spongepowered.api.event.entity.player.PlayerItemDropEvent;
@@ -117,9 +117,9 @@ import org.spongepowered.api.event.entity.player.PlayerBlockPlaceEvent;
 import org.spongepowered.api.event.entity.player.PlayerQuitEvent;
 import org.spongepowered.api.event.entity.player.PlayerRespawnEvent;
 import org.spongepowered.api.event.entity.player.PlayerUpdateEvent;
-import org.spongepowered.api.event.entity.player.fishing.PlayerCastFishingLineEvent;
-import org.spongepowered.api.event.entity.player.fishing.PlayerHookedEntityEvent;
-import org.spongepowered.api.event.entity.player.fishing.PlayerRetractFishingLineEvent;
+import org.spongepowered.api.event.entity.player.fishing.PlayerFishingLineCastEvent;
+import org.spongepowered.api.event.entity.player.fishing.PlayerEntityHookedEvent;
+import org.spongepowered.api.event.entity.player.fishing.PlayerFishingLineRetractEvent;
 import org.spongepowered.api.event.message.CommandEvent;
 import org.spongepowered.api.event.message.CommandSuggestionsEvent;
 import org.spongepowered.api.event.message.MessageEvent;
@@ -1121,24 +1121,24 @@ public final class SpongeEventFactory {
     }
 
     /**
-     * Creates a new {@link PlayerCastFishingLineEvent}.
+     * Creates a new {@link PlayerFishingLineCastEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param entity The player
      * @param fishHook The {@link FishHook} effected by this event
      * @return A new instance of the event
      */
-    public static PlayerCastFishingLineEvent createPlayerCastFishingLineEvent(Game game, Player entity, FishHook fishHook) {
+    public static PlayerFishingLineCastEvent createPlayerCastFishingLineEvent(Game game, Player entity, FishHook fishHook) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
         values.put("entity", entity);
         values.put("user", entity);
         values.put("fishHook", fishHook);
-        return createEvent(PlayerCastFishingLineEvent.class, values);
+        return createEvent(PlayerFishingLineCastEvent.class, values);
     }
 
     /**
-     * Creates a new {@link PlayerHookedEntityEvent}.
+     * Creates a new {@link PlayerEntityHookedEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param entity The player
@@ -1146,18 +1146,18 @@ public final class SpongeEventFactory {
      * @param caughtEntity The {@link Entity} caught by the player, can be null
      * @return A new instance of the event
      */
-    public static PlayerHookedEntityEvent createPlayerHookedEntityEvent(Game game, Player entity, FishHook fishHook, Entity caughtEntity) {
+    public static PlayerEntityHookedEvent createPlayerHookedEntityEvent(Game game, Player entity, FishHook fishHook, Entity caughtEntity) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
         values.put("entity", entity);
         values.put("user", entity);
         values.put("fishHook", fishHook);
         values.put("caughtEntity", Optional.fromNullable(caughtEntity));
-        return createEvent(PlayerHookedEntityEvent.class, values);
+        return createEvent(PlayerEntityHookedEvent.class, values);
     }
 
     /**
-     * Creates a new {@link PlayerRetractFishingLineEvent}.
+     * Creates a new {@link PlayerFishingLineRetractEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param entity The player
@@ -1167,7 +1167,7 @@ public final class SpongeEventFactory {
      * @param exp The experience to give, or take for negative values
      * @return A new instance of the event
      */
-    public static PlayerRetractFishingLineEvent createPlayerRetractFishingLineEvent(Game game, Player entity, FishHook fishHook, ItemStack caughtItem,
+    public static PlayerFishingLineRetractEvent createPlayerRetractFishingLineEvent(Game game, Player entity, FishHook fishHook, ItemStack caughtItem,
             Entity caughtEntity, int exp) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
@@ -1177,7 +1177,7 @@ public final class SpongeEventFactory {
         values.put("caughtEntity", Optional.fromNullable(caughtEntity));
         values.put("caughtItem", Optional.fromNullable(caughtItem));
         values.put("exp", exp);
-        return createEvent(PlayerRetractFishingLineEvent.class, values);
+        return createEvent(PlayerFishingLineRetractEvent.class, values);
     }
 
     /**
@@ -1225,7 +1225,7 @@ public final class SpongeEventFactory {
     }
 
     /**
-     * Creates a new {@link PlayerChangeWorldEvent}.
+     * Creates a new {@link PlayerWorldChangeEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param entity The player
@@ -1233,14 +1233,14 @@ public final class SpongeEventFactory {
      * @param toWorld The world the player is changing to
      * @return A new instance of the event
      */
-    public static PlayerChangeWorldEvent createPlayerChangeWorld(Game game, Player entity, World fromWorld, World toWorld) {
+    public static PlayerWorldChangeEvent createPlayerChangeWorld(Game game, Player entity, World fromWorld, World toWorld) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
         values.put("entity", entity);
         values.put("user", entity);
         values.put("fromWorld", fromWorld);
         values.put("toWorld", toWorld);
-        return createEvent(PlayerChangeWorldEvent.class, values);
+        return createEvent(PlayerWorldChangeEvent.class, values);
     }
 
     /**

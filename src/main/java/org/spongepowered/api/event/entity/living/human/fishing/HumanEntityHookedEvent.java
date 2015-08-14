@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
  * Called when a {@link org.spongepowered.api.entity.living.Human} hooks an
  * {@link Entity} with a fishing rod.
  */
-public interface HumanHookedEntityEvent extends HumanFishEvent, HumanEvent {
+public interface HumanEntityHookedEvent extends HumanFishEvent, HumanEvent {
 
     /**
      * Gets the {@link Entity} hooked, if available.
