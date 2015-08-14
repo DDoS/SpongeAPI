@@ -22,11 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.living.human.fishing;
+package org.spongepowered.api.event.entity.living.human;
 
 import com.google.common.base.Optional;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.entity.living.human.HumanEvent;
 
 import javax.annotation.Nullable;
 

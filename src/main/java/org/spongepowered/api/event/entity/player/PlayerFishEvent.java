@@ -22,14 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.player.fishing;
+package org.spongepowered.api.event.entity.player;
 
-import org.spongepowered.api.event.entity.living.human.fishing.HumanFishingLineRetractEvent;
+import org.spongepowered.api.event.entity.living.human.HumanFishEvent;
 
 /**
- * Called when a {@link org.spongepowered.api.entity.player.Player} retracts
- * a fishing line.
+ * Called when a {@link org.spongepowered.api.entity.player.Player} performs
+ * a fishing-related action
  */
-public interface PlayerFishingLineRetractEvent extends HumanFishingLineRetractEvent, PlayerFishEvent {
+public interface PlayerFishEvent extends HumanFishEvent, PlayerEvent {
 
 }
