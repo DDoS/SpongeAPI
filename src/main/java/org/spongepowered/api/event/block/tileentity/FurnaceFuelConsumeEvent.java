@@ -22,15 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.living;
+package org.spongepowered.api.event.block.tileentity;
 
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.living.Living;
-import org.spongepowered.api.event.entity.EntityInteractEntityEvent;
+import com.google.common.base.Optional;
+import org.spongepowered.api.block.tileentity.carrier.Furnace;
+import org.spongepowered.api.event.inventory.ItemResultEvent;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 /**
- * Called when a {@link Living} interacts with an {@link Entity}.
+ * An event when a {@link Furnace} consumes an {@link ItemStack} as fuel.
  */
-public interface LivingInteractEntityEvent extends LivingInteractEvent, EntityInteractEntityEvent {
+public interface FurnaceFuelConsumeEvent extends FurnaceEvent, ItemResultEvent {
+
+    /**
+     * Gets the burned item.
+     *
+     * <p>A {@link Furnace} uses {@link ItemStack}s to fuel itself, and after the fuel is
+     * spent, the item is burned.</p>
+     *
+     * @return The burned item
+     */
+    ItemStack getBurnedItem();
+
+    /**
+     * Gets the remaining fuel {@link ItemStack} within this furnace.
+     *
+     * <p>Fuel burns and may run out.</p>
+     *
+     * @return The fuel item, if available
+     */
+    Optional<ItemStack> getRemainingFuel();
 
 }

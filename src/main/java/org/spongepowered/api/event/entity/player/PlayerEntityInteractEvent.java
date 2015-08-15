@@ -22,43 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.block.tileentity;
+package org.spongepowered.api.event.entity.player;
 
-import org.spongepowered.api.block.tileentity.carrier.Furnace;
-import org.spongepowered.api.event.Cancellable;
-import org.spongepowered.api.event.inventory.ItemResultEvent;
-import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.event.entity.living.human.HumanEntityInteractEvent;
 
 /**
- * An event that occurs when a {@link Furnace} smelt an item.
+ * Called when a {@link Player} interacts with an {@link Entity}.
  */
-public interface FurnaceSmeltItemEvent extends FurnaceEvent, ItemResultEvent, Cancellable {
-
-    /**
-     * Gets the freshly cooked {@link ItemStack}.
-     *
-     * <p>A {@link Furnace} cooks {@link ItemStack}s with fuel and produces
-     * new items.</p>
-     *
-     * @return The cooked item
-     */
-    ItemStack getCookedItem();
-
-    /**
-     * Sets the cooked {@link ItemStack}.
-     *
-     * <p>A {@link Furnace} cooks {@link ItemStack}s with fuel and produces
-     * new items.</p>
-     *
-     * @param item The resulting cooked item
-     */
-    void setCookedItem(ItemStack item);
-
-    /**
-     * Gets the source {@link ItemStack} that was cooked.
-     *
-     * @return The source item
-     */
-    ItemStack getSourceItem();
+public interface PlayerEntityInteractEvent extends PlayerInteractEvent, HumanEntityInteractEvent {
 
 }

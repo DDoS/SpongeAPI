@@ -22,15 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity.player;
+package org.spongepowered.api.event.entity.living;
 
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.entity.living.human.HumanInteractEntityEvent;
+import org.spongepowered.api.entity.living.Living;
+import org.spongepowered.api.event.entity.EntityInteractEntityEvent;
 
 /**
- * Called when a {@link Player} interacts with an {@link Entity}.
+ * Called when a {@link Living} interacts with an {@link Entity}.
  */
-public interface PlayerInteractEntityEvent extends PlayerInteractEvent, HumanInteractEntityEvent {
+public interface LivingEntityInteractEvent extends LivingInteractEvent, EntityInteractEntityEvent {
 
 }
