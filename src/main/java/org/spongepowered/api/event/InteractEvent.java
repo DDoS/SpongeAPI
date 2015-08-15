@@ -22,24 +22,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity;
-
-import com.flowpowered.math.vector.Vector3d;
-import com.google.common.base.Optional;
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.Cancellable;
+package org.spongepowered.api.event;
 
 /**
- * Called when an {@link Entity} is performing an interaction.
+ * Called when an interaction occurs.
  */
-public interface EntityInteractEvent extends EntityEvent, Cancellable {
+public interface InteractEvent extends Cancellable {
 
-    /**
-     * Gets the point of interaction where the interaction occurred as a {@link Vector3d}.
-     *
-     * <p>Depending on the interaction, this may or may not be known(hence the optional)</p>
-     *
-     * @return An optional containing the point of interaction or {@link Optional#absent()} if not known
-     */
-    Optional<Vector3d> getInteractionPoint();
 }

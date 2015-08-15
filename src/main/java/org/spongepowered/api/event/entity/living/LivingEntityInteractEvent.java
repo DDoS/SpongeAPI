@@ -26,7 +26,6 @@ package org.spongepowered.api.event.entity.living;
 
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
-import org.spongepowered.api.event.entity.EntityInteractEntityEvent;
 
 /**
  * Called when a {@link Living} interacts with an {@link Entity}.

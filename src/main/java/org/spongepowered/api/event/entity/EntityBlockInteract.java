@@ -24,22 +24,20 @@
  */
 package org.spongepowered.api.event.entity;
 
-import com.flowpowered.math.vector.Vector3d;
-import com.google.common.base.Optional;
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.block.BlockEvent;
+import org.spongepowered.api.util.Direction;
 
 /**
- * Called when an {@link Entity} is performing an interaction.
+ * Called when an {@link Entity} performs an interaction against a {@link BlockState}.
  */
-public interface EntityInteractEvent extends EntityEvent, Cancellable {
+public interface EntityBlockInteract extends EntityInteractEvent, BlockEvent {
 
     /**
-     * Gets the point of interaction where the interaction occurred as a {@link Vector3d}.
+     * Gets the target "side" of the {@link BlockState} having the interaction occurred on as a {@link Direction}.
      *
-     * <p>Depending on the interaction, this may or may not be known(hence the optional)</p>
-     *
-     * @return An optional containing the point of interaction or {@link Optional#absent()} if not known
+     * @return The target side
      */
-    Optional<Vector3d> getInteractionPoint();
+    Direction getTargetSide();
 }

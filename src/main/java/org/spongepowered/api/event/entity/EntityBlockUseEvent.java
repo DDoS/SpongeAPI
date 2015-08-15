@@ -24,17 +24,13 @@
  */
 package org.spongepowered.api.event.entity;
 
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.event.block.BlockEvent;
 
 /**
- * Called when a {@link Entity} interacts with an {@link Entity}.
+ * Called when an {@link Entity} performs a "use" interaction on {@link BlockState}.
  */
-public interface EntityInteractEntityEvent extends EntityInteractEvent {
+public interface EntityBlockUseEvent extends EntityUseEvent, BlockEvent {
 
-    /**
-     * Get the entity being interacted with.
-     *
-     * @return The target entity
-     */
-    Entity getTargetEntity();
 }

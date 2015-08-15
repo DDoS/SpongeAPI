@@ -85,8 +85,6 @@ import org.spongepowered.api.event.entity.EntityDismountEvent;
 import org.spongepowered.api.event.entity.EntityDisplaceEvent;
 import org.spongepowered.api.event.entity.EntityItemDropEvent;
 import org.spongepowered.api.event.entity.EntityBlockHarvestEvent;
-import org.spongepowered.api.event.entity.EntityBlockInteractEvent;
-import org.spongepowered.api.event.entity.EntityInteractEntityEvent;
 import org.spongepowered.api.event.entity.EntityInteractEvent;
 import org.spongepowered.api.event.entity.EntityLeashEvent;
 import org.spongepowered.api.event.entity.EntityMountEvent;

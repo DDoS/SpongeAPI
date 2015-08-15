@@ -22,15 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event.entity;
+package org.spongepowered.api.event.block;
 
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.block.BlockInteractEvent;
+import com.google.common.base.Optional;
+import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 
 /**
- * Called when a {@link Entity} interacts with a {@link Location}.
+ * Called when a {@link BlockState} performs an interaction against another {@link BlockState}.
  */
-public interface EntityBlockInteractEvent extends EntityInteractEvent, BlockInteractEvent {
+public interface BlockInteractBlockEvent extends BlockInteractEvent {
 
+    /**
+     * Gets the target {@link Location} being interacted with.
+     * @return The location
+     */
+    Location getTargetLocation();
+
+    /**
+     * Gets the target {@link BlockState} being interacted with.
+     * @return The block state
+     */
+    BlockState getTargetBlock();
+
+    /**
+     * Gets the target "side" of the {@link BlockState} being interacted with or {@link Optional#absent()}
+     * if not known.
+     *
+     * @return An optional containing the side being interacted with or {@link Optional#absent()} if not known
+     */
+    Optional<Direction> getTargetSide();
 }

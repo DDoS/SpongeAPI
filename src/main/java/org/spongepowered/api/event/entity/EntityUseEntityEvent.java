@@ -24,22 +24,17 @@
  */
 package org.spongepowered.api.event.entity;
 
-import com.flowpowered.math.vector.Vector3d;
-import com.google.common.base.Optional;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.Cancellable;
 
 /**
- * Called when an {@link Entity} is performing an interaction.
+ * Called when an {@link Entity} performs a "use" interaction on another {@link Entity}.
  */
-public interface EntityInteractEvent extends EntityEvent, Cancellable {
+public interface EntityUseEntityEvent extends EntityUseEvent {
 
     /**
-     * Gets the point of interaction where the interaction occurred as a {@link Vector3d}.
+     * Gets the {@link Entity} having the interaction type "used" performed against.
      *
-     * <p>Depending on the interaction, this may or may not be known(hence the optional)</p>
-     *
-     * @return An optional containing the point of interaction or {@link Optional#absent()} if not known
+     * @return The entity
      */
-    Optional<Vector3d> getInteractionPoint();
+    Entity getTarget();
 }

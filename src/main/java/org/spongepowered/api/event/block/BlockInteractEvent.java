@@ -24,15 +24,23 @@
  */
 package org.spongepowered.api.event.block;
 
+import com.google.common.base.Optional;
+import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.util.Direction;
 
 /**
- * Dispatched when a block is being interacted with.
+ * Called when a {@link BlockState} is performing an interaction.
  */
-public interface BlockInteractEvent extends BlockEvent {
+public interface BlockInteractEvent extends BlockEvent, Cancellable {
+
     /**
-     * Gets the 'face' of the block that was interacted as a {@link org.spongepowered.api.util.Direction}.
-     * @return The direction
+     * Gets the "side" that interaction occurred from as a {@link Direction}.
+     *
+     * <p>Depending on the interaction, this may or may not be known(hence the optional)</p>
+     *
+     * @return An optional containing the side of interaction or {@link Optional#absent()} if not known
      */
-    Direction getSide();
+    Optional<Direction> getInteractionSide();
 }
+
