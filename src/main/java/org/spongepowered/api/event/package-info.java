@@ -29,11 +29,11 @@
  *
  * Their names are composed as Source|Action|Target.
  *
- * ie. BlockEntityInteractEvent is when a source (block) interacts (verb) a target (entity).
+ * ie. BlockInteractEntityEvent is when a source (block) interacts (verb) a target (entity).
  *
  * Source: {@link org.spongepowered.api.block.BlockState} or "Block"
- * Target: {@link org.spongepowered.api.entity.Entity} or "Entity"
  * Action: Interact or some verb (Use, Break, etc)
+ * Target: {@link org.spongepowered.api.entity.Entity} or "Entity"
  *
  */
 @org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.api.event;
