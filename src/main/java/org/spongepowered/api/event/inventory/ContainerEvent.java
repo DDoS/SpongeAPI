@@ -24,14 +24,14 @@
  */
 package org.spongepowered.api.event.inventory;
 
-import org.spongepowered.api.event.GameEvent;
+import org.spongepowered.api.event.Event;
 import org.spongepowered.api.item.inventory.Container;
 
 
 /**
  * A ContainerEvent is a GameEvent that involves a {@link Container}.
  */
-public interface ContainerEvent extends GameEvent {
+public interface ContainerEvent extends Event {
 
     /**
      * Returns the Container involved in this event.

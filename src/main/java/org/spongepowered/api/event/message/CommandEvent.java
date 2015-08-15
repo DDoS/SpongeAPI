@@ -25,14 +25,14 @@
 package org.spongepowered.api.event.message;
 
 import org.spongepowered.api.event.Cancellable;
-import org.spongepowered.api.event.GameEvent;
+import org.spongepowered.api.event.Event;
 import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 
 /**
  * Fired when a command has been used and needs to be processed.
  */
-public interface CommandEvent extends GameEvent, Cancellable {
+public interface CommandEvent extends Cancellable, Event {
 
     /**
      * Get the source of the command.

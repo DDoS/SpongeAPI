@@ -25,14 +25,14 @@
 package org.spongepowered.api.event.block;
 
 import org.spongepowered.api.block.BlockState;
-import org.spongepowered.api.event.GameEvent;
+import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.cause.CauseTracked;
 import org.spongepowered.api.world.Location;
 
 /**
  * Base event for all events with a {@link BlockState} at a {@link Location} as the source.
  */
-public interface BlockEvent extends GameEvent, CauseTracked {
+public interface BlockEvent extends CauseTracked, Event {
 
     /**
      * Gets the {@link Location}.

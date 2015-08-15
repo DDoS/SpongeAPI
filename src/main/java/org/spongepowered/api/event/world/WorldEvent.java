@@ -24,18 +24,18 @@
  */
 package org.spongepowered.api.event.world;
 
-import org.spongepowered.api.event.GameEvent;
+import org.spongepowered.api.event.Event;
 import org.spongepowered.api.world.World;
 
 /**
- * Represents an event that pertains to a {@link World}.
+ * Base event for all events with a {@link World} as the source.
  */
-public interface WorldEvent extends GameEvent {
+public interface WorldEvent extends Event {
 
     /**
-     * Gets the {@link World} involved in this event.
+     * Gets the {@link World}.
      *
-     * @return The world that this event is involved in
+     * @return The world
      */
     World getWorld();
 

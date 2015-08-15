@@ -30,7 +30,7 @@ import org.spongepowered.api.event.entity.EntityBulkEvent;
 import org.spongepowered.api.event.entity.EntityEvent;
 
 /**
- * Called when there is a lightning strike.
+ * Called when a {@link Lightning} is spawned.
  */
 public interface LightningStrikeEvent extends EntityEvent, WeatherEvent, BulkBlockEvent, EntityBulkEvent {
 

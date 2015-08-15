@@ -24,19 +24,27 @@
  */
 package org.spongepowered.api.event;
 
+import org.spongepowered.api.Game;
 import org.spongepowered.api.util.annotation.ImplementedBy;
 import org.spongepowered.api.util.event.callback.CallbackList;
 
 /**
- * An event that occurs in Sponge.
+ * An event triggered by the {@link Game}.
  */
 @ImplementedBy(AbstractEvent.class)
 public interface Event {
 
     /**
-     * Get a list of callbacks.
+     * Gets the {@link Game}.
      *
-     * @return A list of callbacks
+     * @return The game
+     */
+    Game getGame();
+
+    /**
+     * Gets the {@link CallbackList} that is invoked after resolution of this event.
+     *
+     * @return The callbacklist
      */
     CallbackList getCallbacks();
 

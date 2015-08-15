@@ -27,6 +27,6 @@ package org.spongepowered.api.event;
 /**
  * Called when an interaction occurs.
  */
-public interface InteractEvent extends Cancellable {
+public interface InteractEvent extends Cancellable, Event {
 
 }

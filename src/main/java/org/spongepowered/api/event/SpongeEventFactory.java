@@ -127,7 +127,7 @@ import org.spongepowered.api.event.rcon.RconLoginEvent;
 import org.spongepowered.api.event.rcon.RconQuitEvent;
 import org.spongepowered.api.event.server.StatusPingEvent;
 import org.spongepowered.api.event.state.StateEvent;
-import org.spongepowered.api.event.statistic.AchievementEvent;
+import org.spongepowered.api.event.statistic.PlayerAchievementEvent;
 import org.spongepowered.api.event.statistic.StatisticChangeEvent;
 import org.spongepowered.api.event.weather.LightningStrikeEvent;
 import org.spongepowered.api.event.weather.WeatherChangeEvent;
@@ -1584,20 +1584,20 @@ public final class SpongeEventFactory {
     }
 
     /**
-     * Creates a new {@link AchievementEvent}.
+     * Creates a new {@link PlayerAchievementEvent}.
      *
      * @param game The game instance for this {@link GameEvent}
      * @param entity The player
      * @param achievement The achievement being added to the player
      * @return A new instance of the event
      */
-    public static AchievementEvent createAchievement(Game game, Player entity, Achievement achievement) {
+    public static PlayerAchievementEvent createAchievement(Game game, Player entity, Achievement achievement) {
         Map<String, Object> values = Maps.newHashMap();
         values.put("game", game);
         values.put("entity", entity);
         values.put("user", entity);
         values.put("achievement", achievement);
-        return createEvent(AchievementEvent.class, values);
+        return createEvent(PlayerAchievementEvent.class, values);
     }
 
     /**

@@ -25,12 +25,12 @@
 package org.spongepowered.api.event.entity;
 
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.GameEvent;
+import org.spongepowered.api.event.Event;
 
 /**
  * Base event for all events with an {@link Entity} as the source.
  */
-public interface EntityEvent extends GameEvent {
+public interface EntityEvent extends Event {
 
     /**
      * Gets the {@link Entity}.

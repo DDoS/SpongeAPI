@@ -27,7 +27,7 @@ package org.spongepowered.api.event;
 /**
  * An event that is related to experience.
  */
-public interface ExperienceEvent {
+public interface ExperienceEvent extends Event {
 
     /**
      * Get the experience after an event has been processed.

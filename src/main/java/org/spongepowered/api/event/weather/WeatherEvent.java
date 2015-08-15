@@ -24,18 +24,18 @@
  */
 package org.spongepowered.api.event.weather;
 
-import org.spongepowered.api.event.GameEvent;
+import org.spongepowered.api.event.Event;
 import org.spongepowered.api.world.weather.WeatherUniverse;
 
 /**
- * Called when a weather-related activity happens.
+ * Base event for all events with an {@link WeatherUniverse} as the source.
  */
-public interface WeatherEvent extends GameEvent {
+public interface WeatherEvent extends Event {
 
     /**
-     * Gets the volume in which the weather changed.
+     * Gets the {@link WeatherUniverse} where the event occurred.
      *
-     * @return The weather volume.
+     * @return The WeatherUniverse
      */
     WeatherUniverse getWeatherUniverse();
 }

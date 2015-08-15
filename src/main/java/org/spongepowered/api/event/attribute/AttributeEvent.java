@@ -27,12 +27,12 @@ package org.spongepowered.api.event.attribute;
 import org.spongepowered.api.attribute.Attribute;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.event.Cancellable;
-import org.spongepowered.api.event.GameEvent;
+import org.spongepowered.api.event.Event;
 
 /**
  * An event fired when an {@link Attribute} is changed in any way.
  */
-public interface AttributeEvent extends Cancellable, GameEvent {
+public interface AttributeEvent extends Cancellable, Event {
 
     /**
      * Gets the {@link DataHolder} whose attributes are being changed.

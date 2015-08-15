@@ -22,22 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.event;
+package org.spongepowered.api.event.statistic;
 
-import org.spongepowered.api.Game;
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.entity.player.PlayerEvent;
+import org.spongepowered.api.statistic.achievement.Achievement;
 
 /**
- * An event that deals with the game.
- *
- * @see Game
+ * Represents an event that is called when a {@link Player} earns an
+ * {@link Achievement}.
  */
-public interface GameEvent extends Event {
+public interface PlayerAchievementEvent extends PlayerEvent, Cancellable {
 
     /**
-     * Get the game.
+     * Gets the achievement that is granted to the {@link Player}.
      *
-     * @return The game
+     * @return The achievement that is granted to the player
      */
-    Game getGame();
+    Achievement getAchievement();
 
 }
