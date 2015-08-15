@@ -27,12 +27,12 @@ package org.spongepowered.api.event.block.tileentity;
 import org.spongepowered.api.block.tileentity.TileEntity;
 import org.spongepowered.api.data.manipulator.DataManipulator;
 import org.spongepowered.api.data.manipulator.ImmutableDataManipulator;
-import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.GameEvent;
 
 /**
  * An event that involves a {@link TileEntity}.
  */
-public interface TileEntityEvent extends Event {
+public interface TileEntityEvent extends GameEvent {
 
     /**
      * Gets the {@link TileEntity} related to this event.

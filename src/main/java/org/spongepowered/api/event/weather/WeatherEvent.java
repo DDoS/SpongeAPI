@@ -24,13 +24,13 @@
  */
 package org.spongepowered.api.event.weather;
 
-import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.GameEvent;
 import org.spongepowered.api.world.weather.WeatherUniverse;
 
 /**
  * Base event for all events with an {@link WeatherUniverse} as the source.
  */
-public interface WeatherEvent extends Event {
+public interface WeatherEvent extends GameEvent {
 
     /**
      * Gets the {@link WeatherUniverse} where the event occurred.

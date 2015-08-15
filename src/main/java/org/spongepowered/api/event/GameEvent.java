@@ -24,9 +24,18 @@
  */
 package org.spongepowered.api.event;
 
+import org.spongepowered.api.Game;
+
 /**
- * Called when an interaction occurs.
+ * Base event for all events within the {@link Game}.
  */
-public interface InteractEvent extends Cancellable, Event {
+public interface GameEvent extends Event {
+
+    /**
+     * Gets the {@link Game}.
+     *
+     * @return The game
+     */
+    Game getGame();
 
 }

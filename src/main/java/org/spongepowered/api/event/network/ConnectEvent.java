@@ -33,6 +33,6 @@ import org.spongepowered.api.event.Event;
  *
  * <p>Cancelling the event will prevent the source from connecting.</p>
  */
-public interface ConnectEvent extends Cancellable, Event {
+public interface ConnectEvent extends Event, Cancellable {
 
 }

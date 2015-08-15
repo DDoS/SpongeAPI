@@ -25,7 +25,7 @@
 package org.spongepowered.api.event.message;
 
 import org.spongepowered.api.event.Cancellable;
-import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.GameEvent;
 import org.spongepowered.api.util.command.CommandSource;
 
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Event called when suggestions are requested by a command source.
  */
-public interface CommandSuggestionsEvent extends Cancellable, Event {
+public interface CommandSuggestionsEvent extends GameEvent, Cancellable {
 
     /**
      * Get the source of the command.

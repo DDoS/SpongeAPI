@@ -24,11 +24,11 @@
  */
 package org.spongepowered.api.event.state;
 
-import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.GameEvent;
 
 /**
  * Represents all state events.
  */
-public interface StateEvent extends Event {
+public interface StateEvent extends GameEvent {
 
 }

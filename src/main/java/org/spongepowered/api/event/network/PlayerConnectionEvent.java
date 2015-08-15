@@ -24,13 +24,13 @@
  */
 package org.spongepowered.api.event.network;
 
-import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.GameEvent;
 import org.spongepowered.api.network.PlayerConnection;
 
 /**
  * Represents an event that occurs when a {@link PlayerConnection} is being changed.
  */
-public interface PlayerConnectionEvent extends Event {
+public interface PlayerConnectionEvent extends GameEvent {
 
     /**
      * Gets the {@link PlayerConnection} associated with this event.

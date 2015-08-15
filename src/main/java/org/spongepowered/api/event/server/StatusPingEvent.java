@@ -44,7 +44,7 @@ import javax.annotation.Nullable;
  * sending any response.
  * </p>
  */
-public interface StatusPingEvent extends Cancellable, Event {
+public interface StatusPingEvent extends Event, Cancellable {
 
     /**
      * Gets the client pinging the server.

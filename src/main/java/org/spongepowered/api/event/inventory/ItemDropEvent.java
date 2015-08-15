@@ -24,7 +24,7 @@
  */
 package org.spongepowered.api.event.inventory;
 
-import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.GameEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.Collection;
@@ -32,7 +32,7 @@ import java.util.Collection;
 /**
  * Handles when any item or items are dropped on the ground.
  */
-public interface ItemDropEvent extends Event {
+public interface ItemDropEvent extends GameEvent {
 
     /**
      * Gets the items that are being dropped.

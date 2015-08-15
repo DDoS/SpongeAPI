@@ -27,21 +27,13 @@
  * The Sponge Event Structure is easy to understand if you think of base events as being
  * "sources".
  *
- * Their names are composed as Source|Target|Action.
+ * Their names are composed as Source|Action|Target.
  *
- * ie. BlockEntityInteractEvent is when a source (block) selects a target (entity) and interacts (verb).
+ * ie. BlockEntityInteractEvent is when a source (block) interacts (verb) a target (entity).
  *
  * Source: {@link org.spongepowered.api.block.BlockState} or "Block"
  * Target: {@link org.spongepowered.api.entity.Entity} or "Entity"
  * Action: Interact or some verb (Use, Break, etc)
  *
- * There is one exception to this rule. Should an event have a target the same as its source, it
- * is composed as Source|Action|Target.
- *
- * ie. BlockInteractBlockEvent is when a source (block) interacts (verb) the same type of target (block)
- *
- * Source: {@link org.spongepowered.api.block.BlockState} or "Block"
- * Action: Interact or some verb (User, Break, etc)
- * Target: {@link org.spongepowered.api.block.BlockState} or "Block" (the ending type, same as the source)
  */
 @org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.api.event;

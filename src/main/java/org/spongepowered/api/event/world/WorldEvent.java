@@ -24,13 +24,13 @@
  */
 package org.spongepowered.api.event.world;
 
-import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.GameEvent;
 import org.spongepowered.api.world.World;
 
 /**
  * Base event for all events with a {@link World} as the source.
  */
-public interface WorldEvent extends Event {
+public interface WorldEvent extends GameEvent {
 
     /**
      * Gets the {@link World}.

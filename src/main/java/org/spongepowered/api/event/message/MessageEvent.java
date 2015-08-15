@@ -24,7 +24,8 @@
  */
 package org.spongepowered.api.event.message;
 
-import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.GameEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.sink.MessageSink;
 import org.spongepowered.api.util.command.CommandSource;
@@ -32,7 +33,7 @@ import org.spongepowered.api.util.command.CommandSource;
 /**
  * Describes events when a {@link CommandSource} sends a {@link Text} message.
  */
-public interface MessageEvent extends Event {
+public interface MessageEvent extends GameEvent, Cancellable {
 
     /**
      * Gets the {@link CommandSource} of the event which may
