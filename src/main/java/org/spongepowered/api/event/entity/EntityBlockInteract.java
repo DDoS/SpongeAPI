@@ -26,18 +26,32 @@ package org.spongepowered.api.event.entity;
 
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.block.BlockEvent;
 import org.spongepowered.api.util.Direction;
+import org.spongepowered.api.world.Location;
 
 /**
  * Called when an {@link Entity} performs an interaction against a {@link BlockState}.
  */
-public interface EntityBlockInteract extends EntityInteractEvent, BlockEvent {
+public interface EntityBlockInteract extends EntityInteractEvent {
 
     /**
-     * Gets the target "side" of the {@link BlockState} having the interaction occurred on as a {@link Direction}.
+     * Gets the target {@link Location} being interacted with.
      *
-     * @return The target side
+     * @return The location
      */
-    Direction getTargetSide();
+    Location getLocation();
+
+    /**
+     * Gets the target {@link BlockState} being interacted with.
+     *
+     * @return The block state
+     */
+    BlockState getBlock();
+
+    /**
+     * Gets the target "side" of the {@link BlockState} being interacted with.
+     *
+     * @return The side being interacted with
+     */
+    Direction getSide();
 }

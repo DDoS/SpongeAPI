@@ -26,11 +26,9 @@ package org.spongepowered.api.event.entity;
 
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.block.BlockEvent;
 
 /**
  * Called when an {@link Entity} performs a "use" interaction on {@link BlockState}.
  */
-public interface EntityBlockUseEvent extends EntityUseEvent, BlockEvent {
-
+public interface EntityBlockUseEvent extends EntityUseEvent, EntityBlockInteract {
 }
