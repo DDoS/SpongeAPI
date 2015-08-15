@@ -34,7 +34,7 @@ public interface BlockEntityInteractEvent extends BlockInteractEvent {
 
     /**
      * Gets the {@link Entity} being interacted with.
-     * 
+     *
      * @return The entity
      */
     Entity getEntity();

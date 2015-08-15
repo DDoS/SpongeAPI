@@ -28,14 +28,13 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.GameEvent;
 
 /**
- * An event that whose target happens to be an entity.
+ * Base event for all events with an {@link Entity} as its source
  */
 public interface EntityEvent extends GameEvent {
 
     /**
-     * Returns the primary entity involved in this event that performs the action.
-     *
-     * @return The entity performing the action
+     * Gets the {@link Entity}.
+     * @return The entity
      */
     Entity getEntity();
 
