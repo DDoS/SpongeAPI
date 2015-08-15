@@ -28,7 +28,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.GameEvent;
 
 /**
- * Base event for all events with an {@link Entity} as its source
+ * Base event for all events with an {@link Entity} as the source.
  */
 public interface EntityEvent extends GameEvent {
 

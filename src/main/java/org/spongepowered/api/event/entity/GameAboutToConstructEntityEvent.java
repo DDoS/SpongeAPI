@@ -40,7 +40,7 @@ import org.spongepowered.api.world.Location;
  * massive cancellation of {@link EntitySpawnEvent}s due to the
  * instantiation of entities and subsequently killing said entities.</p>
  */
-public interface EntityAboutToConstructEvent extends GameEvent, CauseTracked, Cancellable {
+public interface GameAboutToConstructEntityEvent extends GameEvent, CauseTracked, Cancellable {
 
     /**
      * Gets the {@link EntityType} that is going to be constructed.
