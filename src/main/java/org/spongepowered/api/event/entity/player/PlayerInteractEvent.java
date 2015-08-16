@@ -24,35 +24,8 @@
  */
 package org.spongepowered.api.event.entity.player;
 
-import com.flowpowered.math.vector.Vector3d;
-import com.google.common.base.Optional;
-import org.spongepowered.api.entity.EntityInteractionType;
-import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.entity.living.human.HumanInteractEvent;
 
-/**
- * Called when a {@link Player} interacts with the world.
- */
 public interface PlayerInteractEvent extends PlayerEvent, HumanInteractEvent {
-
-    /**
-     * Gets the {@link EntityInteractionType} that the player used.
-     *
-     * @return The type of click
-     */
-    EntityInteractionType getInteractionType();
-
-    /**
-     * Gets the clicked position of this interact event.
-     *
-     * <p>This may not always be available, in which case
-     * {@link Optional#absent()} is returned. Specifically, when a player
-     * is interacting with an entity that requires a position, the position
-     * is given. IF a player interacts with a block, a position may be given
-     * depending on the circumstance of the block process.</p>
-     *
-     * @return The position, if available
-     */
-    Optional<Vector3d> getClickedPosition();
 
 }

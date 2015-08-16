@@ -29,12 +29,5 @@ import org.spongepowered.api.entity.Entity;
 /**
  * Called when an {@link Entity} performs a "use" interaction on another {@link Entity}.
  */
-public interface EntityUseEntityEvent extends EntityUseEvent {
-
-    /**
-     * Gets the {@link Entity} having the interaction type "used" performed against.
-     *
-     * @return The entity
-     */
-    Entity getTarget();
+public interface EntityUseEntityEvent extends EntityUseEvent, EntityInteractEntityEvent {
 }

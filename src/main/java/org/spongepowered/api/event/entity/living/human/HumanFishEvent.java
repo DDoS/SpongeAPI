@@ -24,13 +24,12 @@
  */
 package org.spongepowered.api.event.entity.living.human;
 
+import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.entity.projectile.FishHook;
 import org.spongepowered.api.event.Cancellable;
-import org.spongepowered.api.event.entity.living.human.HumanEvent;
 
 /**
- * Called when a {@link org.spongepowered.api.entity.living.Human} performs
- * a fishing-related action.
+ * Called when a {@link Human} performs a fishing-related action.
  */
 public interface HumanFishEvent extends HumanEvent, Cancellable {
 

@@ -35,9 +35,9 @@ import org.spongepowered.api.world.Location;
 public interface EntityDeathEvent extends EntityEvent, ExperienceEvent, CauseTracked {
 
     /**
-     * Gets the location of the player's death.
+     * Gets the location of the {@link Entity}'s death.
      *
-     * @return The {@link Location} of the player's death
+     * @return The {@link Location} of the entity's death
      */
     Location getLocation();
 

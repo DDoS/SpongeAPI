@@ -34,7 +34,7 @@ public interface ExperienceEvent extends Event {
      *
      * @return The experience to receive
      */
-    int getExp();
+    int getExperience();
 
     /**
      * Set the amount of experience after an event has been processed.
@@ -42,6 +42,6 @@ public interface ExperienceEvent extends Event {
      *
      * @param exp The experience to give or take
      */
-    void setExp(int exp);
+    void setExperience(int exp);
 
 }
